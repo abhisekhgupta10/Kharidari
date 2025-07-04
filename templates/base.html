@@ -670,10 +670,11 @@
                         <a class="nav-link" href="{% url 'product_list' %}">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'product_list' %}">Deals</a>
+                        <a class="nav-link" href="{% url 'cart' %}">My cart</a>
                     </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'product_list' %}">New Arrivals</a>
+                        <a class="nav-link" href="{% url 'order_history' %}">My Order</a>
                     </li>
                 </ul>
 
@@ -693,13 +694,8 @@
                                     </a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{% url 'cart' %}">
-                                    <i class="fas fa-shopping-cart me-2"></i>My Cart
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'order_history' %}">
-                                    <i class="fas fa-history me-2"></i>My Orders
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
+                               
+                               
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">
                                     <i class="fas fa-sign-out-alt me-2"></i>Logout
                                 </a></li>

@@ -164,8 +164,8 @@ class Order(models.Model):
 
     PAYMENT_METHOD_CHOICES = [
         ('cod', 'Cash on Delivery'),
-        ('online', 'Online Payment'),
-        ('bank_transfer', 'Bank Transfer'),
+        ('esewa', 'eSewa'),
+        ('khalti', 'Khalti'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
@@ -185,7 +185,7 @@ class Order(models.Model):
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     postal_code = models.CharField(max_length=20)
-    country = models.CharField(max_length=50, default='USA')
+    country = models.CharField(max_length=50, default='Nepal')
 
     # Order totals
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)

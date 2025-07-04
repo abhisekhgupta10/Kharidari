@@ -87,7 +87,11 @@
         display: block;
     }
 
-    .form-control {
+    .form-control,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select {
         width: 100%;
         padding: 0.75rem;
         border: 1px solid var(--border-color);
@@ -98,13 +102,18 @@
         transition: var(--transition);
     }
 
-    .form-control:focus {
+    .form-control:focus,
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    select:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(143, 166, 142, 0.1);
     }
 
-    .form-control::placeholder {
+    .form-control::placeholder,
+    input::placeholder {
         color: var(--text-light);
     }
 
@@ -680,29 +689,70 @@
                     <div class="form-section">
                         <h2 class="section-title">Shipping Address</h2>
 
-                        <div class="form-group">
-                            <label for="id_first_name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="id_first_name" name="first_name" placeholder="Enter your full name" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_first_name" class="form-label">First Name</label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_last_name" class="form-label">Last Name</label>
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_email" class="form-label">Email</label>
+                                    {{ form.email }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_phone" class="form-label">Phone Number</label>
+                                    {{ form.phone }}
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="id_address_line_1" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="id_address_line_1" name="address_line_1" placeholder="Enter your address" required>
+                            {{ form.address_line_1 }}
                         </div>
 
                         <div class="form-group">
-                            <label for="id_city" class="form-label">City</label>
-                            <input type="text" class="form-control" id="id_city" name="city" placeholder="Enter your city" required>
+                            <label for="id_address_line_2" class="form-label">Address Line 2 (Optional)</label>
+                            {{ form.address_line_2 }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_city" class="form-label">City</label>
+                                    {{ form.city }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_state" class="form-label">State/Province</label>
+                                    {{ form.state }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_postal_code" class="form-label">Postal Code</label>
+                                    {{ form.postal_code }}
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="id_postal_code" class="form-label">Postal Code</label>
-                            <input type="text" class="form-control" id="id_postal_code" name="postal_code" placeholder="Enter postal code" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_phone" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="id_phone" name="phone" placeholder="Enter your phone number" required>
+                            <label for="id_country" class="form-label">Country</label>
+                            {{ form.country }}
                         </div>
                     </div>
 
@@ -722,8 +772,10 @@
                             </div>
                         </div>
 
-                        <!-- Hidden field for payment method -->
-                        <input type="hidden" name="payment_method" value="cod" id="selected_payment_method">
+                        <!-- Django form payment method field (hidden) -->
+                        <div style="display: none;">
+                            {{ form.payment_method }}
+                        </div>
                     </div>
 
                     <button type="submit" class="place-order-btn" id="place-order-btn">
@@ -798,25 +850,55 @@ $(document).ready(function() {
         $(this).addClass('active');
 
         const method = $(this).data('method');
-        $('#selected_payment_method').val(method);
+
+        // Update the Django form field
+        $('input[name="payment_method"]').each(function() {
+            if ($(this).val() === method) {
+                $(this).prop('checked', true);
+            } else {
+                $(this).prop('checked', false);
+            }
+        });
     });
 
     // Form validation and submission
     $('#checkout-form').on('submit', function(e) {
         const submitBtn = $('#place-order-btn');
 
+        // Basic form validation
+        let isValid = true;
+        const requiredFields = ['first_name', 'last_name', 'email', 'phone', 'address_line_1', 'city', 'postal_code'];
+
+        requiredFields.forEach(function(fieldName) {
+            const field = $(`[name="${fieldName}"]`);
+            if (!field.val().trim()) {
+                field.addClass('is-invalid');
+                isValid = false;
+            } else {
+                field.removeClass('is-invalid').addClass('is-valid');
+            }
+        });
+
+        // Email validation
+        const email = $('[name="email"]').val();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email)) {
+            $('[name="email"]').addClass('is-invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fill in all required fields correctly.');
+            return false;
+        }
+
         // Show loading state
         submitBtn.prop('disabled', true);
         submitBtn.text('Processing Order...');
-
-        // Re-enable button after 15 seconds as fallback
-        setTimeout(function() {
-            submitBtn.prop('disabled', false);
-            submitBtn.text('Place Order');
-        }, 15000);
     });
 
-    // Form field validation
+    // Form field validation on blur
     $('.form-control').on('blur', function() {
         const field = $(this);
         const value = field.val().trim();
@@ -828,18 +910,33 @@ $(document).ready(function() {
         if (field.prop('required') && !value) {
             field.addClass('is-invalid');
         } else if (value) {
-            field.addClass('is-valid');
+            // Email validation
+            if (field.attr('name') === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(value)) {
+                    field.addClass('is-valid');
+                } else {
+                    field.addClass('is-invalid');
+                }
+            } else {
+                field.addClass('is-valid');
+            }
         }
     });
 
     // Phone number formatting (basic)
-    $('#id_phone').on('input', function() {
+    $('[name="phone"]').on('input', function() {
         let value = $(this).val().replace(/\D/g, '');
         if (value.length > 10) {
             value = value.substring(0, 10);
         }
         $(this).val(value);
     });
+
+    // Set default country to Nepal
+    if ($('[name="country"]').val() === '') {
+        $('[name="country"]').val('Nepal');
+    }
 });
 </script>
 
