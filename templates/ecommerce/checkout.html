@@ -6,236 +6,290 @@
 
 {% block extra_css %}
 <style>
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
+    :root {
+        --primary-color: #8FA68E;
+        --secondary-color: #F4A261;
+        --accent-blue: #A8DADC;
+        --accent-beige: #F1FAEE;
+        --text-primary: #2D3436;
+        --text-secondary: #636E72;
+        --text-light: #B2BEC3;
+        --bg-white: #FFFFFF;
+        --bg-section: #F8F9FA;
+        --border-color: #E9ECEF;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        --border-radius: 8px;
+        --border-radius-lg: 12px;
+        --transition: all 0.3s ease;
     }
 
-    .checkout-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-        margin: 20px 0;
-        overflow: hidden;
+    .checkout-page {
+        background: var(--bg-white);
+        min-height: 100vh;
+        padding: 2rem 0;
     }
 
     .checkout-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
+        margin-bottom: 2rem;
     }
 
-    .checkout-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 200%;
-        background: rgba(255, 255, 255, 0.1);
-        transform: rotate(45deg);
-    }
-
-    .checkout-header h1 {
-        font-size: 2.5rem;
-        font-weight: bold;
+    .checkout-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--text-primary);
         margin: 0;
-        position: relative;
-        z-index: 2;
     }
 
-    .checkout-header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 10px 0 0 0;
-        position: relative;
-        z-index: 2;
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin-bottom: 1rem;
     }
 
-    .checkout-section {
-        background: white;
-        margin: 25px;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #f0f0f0;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+    .breadcrumb-item {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
     }
 
-    .checkout-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .checkout-section:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .section-title {
-        color: #333;
-        font-weight: bold;
-        font-size: 1.3rem;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f0f0f0;
-        display: flex;
-        align-items: center;
-        position: relative;
-    }
-
-    .section-title i {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 15px;
-        font-size: 1rem;
-    }
-
-    /* Payment Info Box Styling */
-    .payment-info-box {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        border-radius: 15px;
-        padding: 25px;
-        margin-top: 20px;
-        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.2);
-    }
-
-    .payment-method-display {
-        display: flex;
-        align-items: center;
-        color: white;
-    }
-
-    .payment-icon {
-        background: rgba(255, 255, 255, 0.2);
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 20px;
-        font-size: 1.5rem;
-    }
-
-    .payment-details h5 {
-        margin: 0 0 8px 0;
-        font-size: 1.3rem;
-        font-weight: bold;
-    }
-
-    .payment-details p {
-        margin: 0 0 15px 0;
-        opacity: 0.9;
-        line-height: 1.5;
-    }
-
-    .payment-benefits {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .benefit-item {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
+    .breadcrumb-item.active {
+        color: var(--text-primary);
         font-weight: 500;
     }
 
-    .payment-option {
-        border: 2px solid #e9ecef;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        position: relative;
-        cursor: pointer;
-        background: white;
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "/";
+        color: var(--text-light);
     }
 
-    .payment-option::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
+    .form-section {
+        background: var(--bg-white);
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
         width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        color: var(--text-primary);
+        background: var(--bg-white);
+        transition: var(--transition);
     }
 
-    .payment-option:hover {
-        border-color: #667eea;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-        transform: translateY(-3px);
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(143, 166, 142, 0.1);
     }
 
-    .payment-option:hover::before {
-        opacity: 1;
+    .form-control::placeholder {
+        color: var(--text-light);
     }
 
-    .payment-option input[type="radio"] {
-        display: none;
+    .payment-methods {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
     }
 
-    .payment-option input[type="radio"]:checked {
-        display: none;
+    .payment-method {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        background: var(--bg-white);
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
     }
 
-    .payment-option input[type="radio"]:checked + .payment-info {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .payment-method:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .payment-method.active {
+        background: var(--primary-color);
         color: white;
-        transform: scale(1.02);
+        border-color: var(--primary-color);
     }
 
-    .payment-option input[type="radio"]:checked + .payment-info::before {
-        content: '✓';
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
+    .order-summary {
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .summary-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .order-item {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 1.1rem;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
     }
 
-    .payment-option input[type="radio"]:checked + .payment-info .payment-title {
+    .order-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .item-image {
+        width: 50px;
+        height: 50px;
+        border-radius: var(--border-radius);
+        background: var(--bg-section);
+        flex-shrink: 0;
+    }
+
+    .item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .item-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .item-quantity {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .summary-row.total {
+        border-top: 1px solid var(--border-color);
+        padding-top: 0.75rem;
+        margin-top: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .place-order-btn {
+        background: #007BFF;
         color: white;
+        border: none;
+        padding: 0.875rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        width: 100%;
+        margin-top: 1.5rem;
+        transition: var(--transition);
+        font-size: 1rem;
     }
 
-    .payment-option input[type="radio"]:checked + .payment-info .payment-description {
-        color: rgba(255, 255, 255, 0.9);
+    .place-order-btn:hover {
+        background: #0056b3;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-card);
     }
 
-    .payment-option input[type="radio"]:checked + .payment-info .feature-badge {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border-color: rgba(255, 255, 255, 0.3);
+    @media (max-width: 768px) {
+        .checkout-page {
+            padding: 1rem 0;
+        }
+
+        .checkout-title {
+            font-size: 1.5rem;
+        }
+
+        .payment-methods {
+            flex-direction: column;
+        }
+
+        .order-summary {
+            position: static;
+            margin-top: 1.5rem;
+        }
+
+        .form-control {
+            padding: 0.625rem;
+        }
+
+        .place-order-btn {
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .checkout-page {
+            padding: 0.5rem 0;
+        }
+
+        .checkout-title {
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .order-item {
+            gap: 0.75rem;
+        }
+
+        .item-image {
+            width: 40px;
+            height: 40px;
+        }
+
+        .item-name {
+            font-size: 0.8rem;
+        }
+
+        .item-quantity {
+            font-size: 0.7rem;
+        }
     }
 
     .payment-label {
@@ -603,219 +657,130 @@
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="checkout-container">
+<div class="checkout-page">
+    <div class="container">
         <!-- Checkout Header -->
         <div class="checkout-header">
-            <h1><i class="fas fa-shopping-cart me-3"></i>Secure Checkout</h1>
-            <p>Complete your order safely and securely</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'cart' %}">Cart</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                </ol>
+            </nav>
+            <h1 class="checkout-title">Checkout</h1>
         </div>
 
         <div class="row">
             <!-- Checkout Form -->
             <div class="col-lg-8">
-                <div class="card-body">
-                    <form method="post" id="checkout-form">
-                        {% csrf_token %}
+                <form method="post" id="checkout-form">
+                    {% csrf_token %}
 
-                        <!-- Customer Information Section -->
-                        <div class="checkout-section">
-                            <h6 class="section-title">
-                                <i class="fas fa-user"></i>Customer Information
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-floating form-group">
-                                        <input type="text" class="form-control" id="id_first_name" name="first_name" placeholder="First Name" required>
-                                        <label for="id_first_name" class="form-label">First Name</label>
-                                        <i class="input-icon fas fa-user"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating form-group">
-                                        <input type="text" class="form-control" id="id_last_name" name="last_name" placeholder="Last Name" required>
-                                        <label for="id_last_name" class="form-label">Last Name</label>
-                                        <i class="input-icon fas fa-user"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-floating form-group">
-                                        <input type="email" class="form-control" id="id_email" name="email" placeholder="Email Address" required>
-                                        <label for="id_email" class="form-label">Email Address</label>
-                                        <i class="input-icon fas fa-envelope"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating form-group">
-                                        <input type="tel" class="form-control" id="id_phone" name="phone" placeholder="Phone Number" required>
-                                        <label for="id_phone" class="form-label">Phone Number</label>
-                                        <i class="input-icon fas fa-phone"></i>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Shipping Address Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Shipping Address</h2>
+
+                        <div class="form-group">
+                            <label for="id_first_name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="id_first_name" name="first_name" placeholder="Enter your full name" required>
                         </div>
 
-                        <!-- Shipping Address Section -->
-                        <div class="checkout-section">
-                            <h6 class="section-title">
-                                <i class="fas fa-shipping-fast"></i>Shipping Address
-                            </h6>
-                            <div class="form-floating form-group">
-                                <input type="text" class="form-control" id="id_address_line_1" name="address_line_1" placeholder="Street Address" required>
-                                <label for="id_address_line_1" class="form-label">Street Address</label>
-                                <i class="input-icon fas fa-home"></i>
-                            </div>
-                            <div class="form-floating form-group">
-                                <input type="text" class="form-control" id="id_address_line_2" name="address_line_2" placeholder="Apartment, suite, etc. (optional)">
-                                <label for="id_address_line_2" class="form-label">Apartment, Suite, etc. (Optional)</label>
-                                <i class="input-icon fas fa-building"></i>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-floating form-group">
-                                        <input type="text" class="form-control" id="id_city" name="city" placeholder="City" required>
-                                        <label for="id_city" class="form-label">City</label>
-                                        <i class="input-icon fas fa-city"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating form-group">
-                                        <input type="text" class="form-control" id="id_state" name="state" placeholder="State/Province" required>
-                                        <label for="id_state" class="form-label">State/Province</label>
-                                        <i class="input-icon fas fa-map"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating form-group">
-                                        <input type="text" class="form-control" id="id_postal_code" name="postal_code" placeholder="Postal Code" required>
-                                        <label for="id_postal_code" class="form-label">Postal Code</label>
-                                        <i class="input-icon fas fa-mail-bulk"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-floating form-group">
-                                <input type="text" class="form-control" id="id_country" name="country" placeholder="Country" value="Nepal" required>
-                                <label for="id_country" class="form-label">Country</label>
-                                <i class="input-icon fas fa-globe"></i>
-                            </div>
+                        <div class="form-group">
+                            <label for="id_address_line_1" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="id_address_line_1" name="address_line_1" placeholder="Enter your address" required>
                         </div>
 
-                        <!-- Payment Method Section -->
-                        <div class="checkout-section">
-                            <h6 class="section-title">
-                                <i class="fas fa-money-bill-wave"></i>Payment Method
-                            </h6>
-                            <div class="payment-info-box">
-                                <div class="payment-method-display">
-                                    <div class="payment-icon">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                    </div>
-                                    <div class="payment-details">
-                                        <h5>Cash on Delivery</h5>
-                                        <p>Pay with cash when your order is delivered to your doorstep. No advance payment required.</p>
-                                        <div class="payment-benefits">
-                                            <span class="benefit-item">✓ No advance payment</span>
-                                            <span class="benefit-item">✓ Pay on delivery</span>
-                                            <span class="benefit-item">✓ 100% secure</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Hidden field for payment method -->
-                            <input type="hidden" name="payment_method" value="cod">
+                        <div class="form-group">
+                            <label for="id_city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="id_city" name="city" placeholder="Enter your city" required>
                         </div>
 
-                        <div class="btn-container">
-                            <div class="d-grid gap-3">
-                                <button type="submit" class="btn btn-success btn-lg" id="place-order-btn">
-                                    <i class="fas fa-lock me-2"></i>Place Order Securely
-                                </button>
-                                <a href="{% url 'cart' %}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Back to Cart
-                                </a>
-                            </div>
+                        <div class="form-group">
+                            <label for="id_postal_code" class="form-label">Postal Code</label>
+                            <input type="text" class="form-control" id="id_postal_code" name="postal_code" placeholder="Enter postal code" required>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
-        <!-- Order Summary -->
-        <div class="col-lg-4">
-            <div class="order-summary-card">
-                <div class="order-summary-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-receipt me-2"></i>Order Summary
-                    </h5>
-                    <small>{{ cart.items.count }} item{{ cart.items.count|pluralize }}</small>
-                </div>
-                <div class="order-summary-body">
-                    <!-- Cart Items -->
-                    <div class="mb-3">
-                        {% for item in cart.items.all %}
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0">{{ item.product.name|truncatechars:30 }}</h6>
-                                <small class="text-muted">Qty: {{ item.quantity }}</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-bold">Rs. {{ item.get_total_price }}</span>
-                            </div>
+                        <div class="form-group">
+                            <label for="id_phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="id_phone" name="phone" placeholder="Enter your phone number" required>
                         </div>
-                        {% endfor %}
                     </div>
-                    
-                    <hr>
-                    
-                    <!-- Order Totals -->
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal ({{ cart.total_items }} items):</span>
+
+                    <!-- Payment Method Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">Payment Method</h2>
+
+                        <div class="payment-methods">
+                            <div class="payment-method active" data-method="cod">
+                                Cash on Delivery
+                            </div>
+                            <div class="payment-method" data-method="esewa">
+                                eSewa
+                            </div>
+                            <div class="payment-method" data-method="khalti">
+                                Khalti
+                            </div>
+                        </div>
+
+                        <!-- Hidden field for payment method -->
+                        <input type="hidden" name="payment_method" value="cod" id="selected_payment_method">
+                    </div>
+
+                    <button type="submit" class="place-order-btn" id="place-order-btn">
+                        Place Order
+                    </button>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="order-summary">
+                    <h3 class="summary-title">Order Summary</h3>
+
+                    <!-- Order Items -->
+                    {% for item in cart.items.all %}
+                    <div class="order-item">
+                        <div class="item-image">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius);">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="item-info">
+                            <h6 class="item-name">{{ item.product.name }}</h6>
+                            <p class="item-quantity">Quantity: {{ item.quantity }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
                         <span>Rs. {{ cart.total_price }}</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Tax (13% VAT):</span>
-                        <span>Rs. 0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Shipping:</span>
+
+                    <div class="summary-row">
+                        <span>Shipping</span>
                         <span>
                             {% if cart.total_price >= 5000 %}
-                                <span class="text-success">FREE</span>
+                                Rs. 0
                             {% else %}
-                                Rs. 200.00
+                                Rs. 150
                             {% endif %}
                         </span>
                     </div>
 
-                    <hr>
-
-                    <div class="d-flex justify-content-between mb-3">
-                        <strong>Total:</strong>
-                        <strong class="text-primary">
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>
                             {% if cart.total_price >= 5000 %}
-                                Rs. {{ cart.total_price|floatformat:2 }}
+                                Rs. {{ cart.total_price|floatformat:0 }}
                             {% else %}
-                                Rs. {{ cart.total_price|add:200|floatformat:2 }}
+                                Rs. {{ cart.total_price|add:150|floatformat:0 }}
                             {% endif %}
-                        </strong>
-                    </div>
-                    
-                    <!-- Security Features -->
-                    <div class="alert alert-info small">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-shield-alt text-primary me-2"></i>
-                            <span>Secure SSL Encryption</span>
-                        </div>
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-lock text-primary me-2"></i>
-                            <span>Safe & Secure Checkout</span>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-undo text-primary me-2"></i>
-                            <span>30-Day Return Policy</span>
-                        </div>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -827,9 +792,14 @@
 {% block extra_js %}
 <script>
 $(document).ready(function() {
-    // Set default button text for Cash on Delivery
-    const submitBtn = $('#place-order-btn');
-    submitBtn.html('<i class="fas fa-money-bill-wave me-2"></i>Place Order - Cash on Delivery');
+    // Payment method selection
+    $('.payment-method').on('click', function() {
+        $('.payment-method').removeClass('active');
+        $(this).addClass('active');
+
+        const method = $(this).data('method');
+        $('#selected_payment_method').val(method);
+    });
 
     // Form validation and submission
     $('#checkout-form').on('submit', function(e) {
@@ -837,12 +807,12 @@ $(document).ready(function() {
 
         // Show loading state
         submitBtn.prop('disabled', true);
-        submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Processing Order...');
+        submitBtn.text('Processing Order...');
 
         // Re-enable button after 15 seconds as fallback
         setTimeout(function() {
             submitBtn.prop('disabled', false);
-            submitBtn.html('<i class="fas fa-money-bill-wave me-2"></i>Place Order - Cash on Delivery');
+            submitBtn.text('Place Order');
         }, 15000);
     });
 
@@ -858,24 +828,9 @@ $(document).ready(function() {
         if (field.prop('required') && !value) {
             field.addClass('is-invalid');
         } else if (value) {
-            // Email validation
-            if (field.attr('type') === 'email') {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (emailRegex.test(value)) {
-                    field.addClass('is-valid');
-                } else {
-                    field.addClass('is-invalid');
-                }
-            } else {
-                field.addClass('is-valid');
-            }
+            field.addClass('is-valid');
         }
     });
-
-    // Auto-fill country field with Nepal
-    if ($('#id_country').val() === '') {
-        $('#id_country').val('Nepal');
-    }
 
     // Phone number formatting (basic)
     $('#id_phone').on('input', function() {
@@ -885,33 +840,17 @@ $(document).ready(function() {
         }
         $(this).val(value);
     });
-
-    // Add smooth scrolling to form sections
-    $('.section-title').on('click', function() {
-        const section = $(this).closest('.checkout-section');
-        $('html, body').animate({
-            scrollTop: section.offset().top - 100
-        }, 500);
-    });
 });
 </script>
 
-<style>
-.payment-option.selected {
-    border-color: #007bff !important;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25) !important;
-}
 
+<style>
 .form-control.is-valid {
-    border-color: #28a745;
+    border-color: var(--primary-color);
 }
 
 .form-control.is-invalid {
     border-color: #dc3545;
-}
-
-.checkout-section {
-    scroll-margin-top: 100px;
 }
 </style>
 {% endblock %}

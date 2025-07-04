@@ -1,256 +1,291 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Shopping Cart - NepalShop{% endblock %}
+{% block title %}Shopping Cart - Kharidari{% endblock %}
 
 {% block extra_css %}
 <style>
-    .cart-container {
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        min-height: 80vh;
-        padding: 40px 0;
+    :root {
+        --primary-color: #8FA68E;
+        --secondary-color: #F4A261;
+        --accent-blue: #A8DADC;
+        --accent-beige: #F1FAEE;
+        --text-primary: #2D3436;
+        --text-secondary: #636E72;
+        --text-light: #B2BEC3;
+        --bg-white: #FFFFFF;
+        --bg-section: #F8F9FA;
+        --border-color: #E9ECEF;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        --border-radius: 8px;
+        --border-radius-lg: 12px;
+        --transition: all 0.3s ease;
+    }
+
+    .cart-page {
+        background: var(--bg-white);
+        min-height: 100vh;
+        padding: 2rem 0;
     }
 
     .cart-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 20px 20px 0 0;
-        margin-bottom: 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .cart-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 200%;
-        background: rgba(255,255,255,0.1);
-        transform: rotate(45deg);
+        margin-bottom: 2rem;
     }
 
     .cart-title {
-        font-size: 2.5rem;
-        font-weight: bold;
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--text-primary);
         margin: 0;
-        position: relative;
-        z-index: 2;
-    }
-
-    .cart-subtitle {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 10px 0 0 0;
-        position: relative;
-        z-index: 2;
-    }
-
-    .cart-main {
-        background: white;
-        border-radius: 0 0 20px 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        overflow: hidden;
     }
 
     .cart-item {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        border: 1px solid #f0f0f0;
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
 
     .cart-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        box-shadow: var(--shadow-card);
     }
 
     .product-image {
-        border-radius: 12px;
+        width: 80px;
+        height: 80px;
+        border-radius: var(--border-radius);
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+        background: var(--bg-section);
     }
 
     .product-image img {
         width: 100%;
-        height: 120px;
+        height: 100%;
         object-fit: cover;
-        transition: transform 0.3s ease;
     }
 
-    .product-image:hover img {
-        transform: scale(1.05);
+    .product-info {
+        flex: 1;
+        min-width: 0;
     }
 
     .product-name {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 8px;
-    }
-
-    .product-name a {
-        color: #333;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin: 0 0 0.25rem 0;
         text-decoration: none;
-        transition: color 0.3s ease;
     }
 
-    .product-name a:hover {
-        color: #667eea;
+    .product-name:hover {
+        color: var(--primary-color);
+        text-decoration: none;
     }
 
-    .product-price {
-        font-size: 1.1rem;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    .price-original {
-        color: #28a745;
-    }
-
-    .price-discounted {
-        color: #dc3545;
-        text-decoration: line-through;
-        font-size: 0.9rem;
-        margin-left: 8px;
+    .product-size {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin: 0;
     }
 
     .quantity-controls {
         display: flex;
         align-items: center;
-        background: #f8f9fa;
-        border-radius: 25px;
-        padding: 5px;
-        width: fit-content;
+        gap: 0.5rem;
+        flex-shrink: 0;
     }
 
     .quantity-btn {
-        background: #667eea;
-        color: white;
-        border: none;
-        width: 35px;
-        height: 35px;
+        background: var(--bg-section);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
+        transition: var(--transition);
+        font-size: 0.75rem;
     }
 
     .quantity-btn:hover {
-        background: #5a6fd8;
-        transform: scale(1.1);
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
     }
 
-    .quantity-input {
-        border: none;
-        background: transparent;
+    .quantity-display {
+        font-weight: 600;
+        color: var(--text-primary);
+        min-width: 20px;
         text-align: center;
-        width: 50px;
-        font-weight: bold;
-        color: #333;
     }
 
-    .quantity-input:focus {
-        outline: none;
-    }
-
-    .remove-btn {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-    }
-
-    .remove-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-    }
-
-    .item-total {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: #667eea;
-    }
-
-    .cart-summary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    .order-summary {
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
         position: sticky;
-        top: 100px;
+        top: 2rem;
     }
 
     .summary-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 25px;
-        text-align: center;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1.5rem 0;
     }
 
     .summary-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
     }
 
-    .summary-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-        font-size: 1.2rem;
-        font-weight: bold;
+    .summary-row.total {
+        border-top: 1px solid var(--border-color);
+        padding-top: 0.75rem;
+        margin-top: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
     }
 
     .checkout-btn {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        background: #007BFF;
         color: white;
         border: none;
-        padding: 15px 30px;
-        border-radius: 25px;
-        font-size: 1.1rem;
-        font-weight: bold;
+        padding: 0.875rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 500;
         width: 100%;
-        margin-top: 25px;
-        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
     }
 
     .checkout-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+        background: #0056b3;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-card);
     }
 
-    .continue-shopping {
-        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    .empty-cart {
+        text-align: center;
+        padding: 3rem 1.5rem;
+        background: var(--bg-white);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+    }
+
+    .empty-cart-icon {
+        font-size: 3rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+
+    .empty-cart h3 {
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .empty-cart p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .shop-btn {
+        background: var(--primary-color);
         color: white;
         border: none;
-        padding: 12px 25px;
-        border-radius: 20px;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 500;
         text-decoration: none;
         display: inline-block;
-        margin-top: 15px;
-        transition: all 0.3s ease;
+        transition: var(--transition);
     }
 
-    .continue-shopping:hover {
+    .shop-btn:hover {
+        background: var(--primary-light);
         color: white;
         text-decoration: none;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+        .cart-page {
+            padding: 1rem 0;
+        }
+
+        .cart-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+        }
+
+        .product-info {
+            width: 100%;
+        }
+
+        .quantity-controls {
+            align-self: flex-end;
+        }
+
+        .order-summary {
+            position: static;
+            margin-top: 1.5rem;
+        }
+
+        .cart-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cart-item {
+            padding: 0.75rem;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7rem;
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+        }
     }
 
     .empty-cart {
@@ -471,184 +506,117 @@
 {% endblock %}
 
 {% block content %}
-<div class="cart-container">
+<div class="cart-page">
     <div class="container">
         {% csrf_token %}
 
         <!-- Cart Header -->
         <div class="cart-header">
-            <h1 class="cart-title">
-                <i class="fas fa-shopping-cart me-3"></i>Your Shopping Cart
-            </h1>
-            {% if cart.items.all %}
-                <p class="cart-subtitle">
-                    {{ cart.total_items }} item{{ cart.total_items|pluralize }} • Total: Rs. {{ cart.total_price }}
-                </p>
-            {% else %}
-                <p class="cart-subtitle">Your cart is currently empty</p>
-            {% endif %}
+            <h1 class="cart-title">Shopping Cart</h1>
         </div>
 
-        <!-- Cart Main Content -->
-        <div class="cart-main">
-            {% if cart.items.all %}
-                <div class="row p-4">
-                    <!-- Cart Items -->
-                    <div class="col-lg-8">
-                        {% for item in cart.items.all %}
-                        <div class="cart-item" data-item-id="{{ item.id }}">
-                            <div class="row align-items-center">
-                                <!-- Product Image -->
-                                <div class="col-md-3">
-                                    <div class="product-image">
-                                        {% if item.product.image %}
-                                            <img src="{{ item.product.image.url }}"
-                                                 alt="{{ item.product.name }}">
-                                        {% else %}
-                                            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px;">
-                                                <i class="fas fa-image fa-2x text-muted"></i>
-                                            </div>
-                                        {% endif %}
-                                    </div>
+        {% if cart.items.all %}
+            <div class="row">
+                <!-- Cart Items -->
+                <div class="col-lg-8">
+                    {% for item in cart.items.all %}
+                    <div class="cart-item" data-item-id="{{ item.id }}">
+                        <!-- Product Image -->
+                        <div class="product-image">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-image text-muted"></i>
                                 </div>
-
-                                <!-- Product Details -->
-                                <div class="col-md-4">
-                                    <div class="product-name">
-                                        <a href="{{ item.product.get_absolute_url }}">
-                                            {{ item.product.name }}
-                                        </a>
-                                    </div>
-                                    <small class="text-muted">{{ item.product.category.name }}</small>
-                                    <div class="mt-1">
-                                        {% if item.product.discount_price %}
-                                            <span class="text-primary fw-bold">Rs. {{ item.product.discount_price }}</span>
-                                            <span class="text-muted text-decoration-line-through ms-1">Rs. {{ item.product.price }}</span>
-                                        {% else %}
-                                            <span class="text-primary fw-bold">Rs. {{ item.product.price }}</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                
-                                <!-- Quantity Controls -->
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <button class="btn btn-outline-secondary btn-sm quantity-btn" 
-                                                type="button" 
-                                                data-action="decrease"
-                                                data-item-id="{{ item.id }}">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" 
-                                               class="form-control form-control-sm text-center quantity-input" 
-                                               value="{{ item.quantity }}" 
-                                               min="1" 
-                                               max="{{ item.product.stock }}"
-                                               data-item-id="{{ item.id }}">
-                                        <button class="btn btn-outline-secondary btn-sm quantity-btn" 
-                                                type="button" 
-                                                data-action="increase"
-                                                data-item-id="{{ item.id }}">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                    <small class="text-muted">Max: {{ item.product.stock }}</small>
-                                </div>
-                                
-                                <!-- Item Total -->
-                                <div class="col-md-2">
-                                    <div class="text-center">
-                                        <div class="fw-bold item-total" data-item-id="{{ item.id }}">
-                                            Rs. {{ item.get_total_price }}
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Remove Button -->
-                                <div class="col-md-1">
-                                    <button class="btn btn-outline-danger btn-sm remove-item-btn" 
-                                            data-item-id="{{ item.id }}"
-                                            title="Remove item">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            {% endif %}
                         </div>
-                        {% endfor %}
+
+                        <!-- Product Info -->
+                        <div class="product-info">
+                            <a href="{{ item.product.get_absolute_url }}" class="product-name">
+                                {{ item.product.name }}
+                            </a>
+                            <p class="product-size">Size: {{ item.product.category.name }}</p>
+                        </div>
+
+                        <!-- Quantity Controls -->
+                        <div class="quantity-controls">
+                            <button class="quantity-btn"
+                                    type="button"
+                                    data-action="decrease"
+                                    data-item-id="{{ item.id }}">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity-display">{{ item.quantity }}</span>
+                            <button class="quantity-btn"
+                                    type="button"
+                                    data-action="increase"
+                                    data-item-id="{{ item.id }}">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
                     </div>
                 </div>
-            </div>
-            
-            <!-- Cart Summary -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Order Summary</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
+
+                <!-- Order Summary -->
+                <div class="col-lg-4">
+                    <div class="order-summary">
+                        <h3 class="summary-title">Order Summary</h3>
+
+                        <div class="summary-row">
+                            <span>Subtotal</span>
                             <span class="cart-subtotal">Rs. {{ cart.total_price }}</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax (13% VAT):</span>
-                            <span class="cart-tax">Rs. 0.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping:</span>
+
+                        <div class="summary-row">
+                            <span>Shipping</span>
                             <span class="cart-shipping">
                                 {% if cart.total_price >= 5000 %}
-                                    <span class="text-success">FREE</span>
+                                    FREE
                                 {% else %}
                                     Rs. 200.00
                                 {% endif %}
                             </span>
                         </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Total:</strong>
-                            <strong class="cart-total">
+
+                        <div class="summary-row">
+                            <span>Taxes</span>
+                            <span class="cart-tax">Rs. 10.00</span>
+                        </div>
+
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span class="cart-total">
                                 {% if cart.total_price >= 5000 %}
-                                    Rs. {{ cart.total_price|floatformat:2 }}
+                                    Rs. {{ cart.total_price|add:10|floatformat:2 }}
                                 {% else %}
-                                    Rs. {{ cart.total_price|add:200|floatformat:2 }}
+                                    Rs. {{ cart.total_price|add:200|add:10|floatformat:2 }}
                                 {% endif %}
-                            </strong>
+                            </span>
                         </div>
-                        
-                        {% if cart.total_price < 5000 %}
-                        <div class="alert alert-info small">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Add more items for free shipping on orders over Rs. 5,000!
-                        </div>
-                        {% endif %}
-                        
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg">
-                                <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
-                            </a>
-                            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Continue Shopping
-                            </a>
-                        </div>
+
+                        <a href="{% url 'checkout' %}" class="checkout-btn">
+                            Proceed to Checkout
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-            {% else %}
-                <!-- Empty Cart -->
-                <div class="empty-cart">
-                    <div class="empty-cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <h3>Your cart is empty</h3>
-                    <p>Looks like you haven't added any items to your cart yet. Start exploring our amazing products!</p>
-                    <a href="{% url 'product_list' %}" class="shop-now-btn">
-                        <i class="fas fa-shopping-bag me-2"></i>Start Shopping
-                    </a>
+        {% else %}
+            <!-- Empty Cart -->
+            <div class="empty-cart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
                 </div>
-            {% endif %}
-        </div>
+                <h3>Your cart is empty</h3>
+                <p>Looks like you haven't added any items to your cart yet. Start exploring our amazing products!</p>
+                <a href="{% url 'product_list' %}" class="shop-btn">
+                    <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
@@ -661,39 +629,20 @@ $(document).ready(function() {
         const btn = $(this);
         const action = btn.data('action');
         const itemId = btn.data('item-id');
-        const input = $(`.quantity-input[data-item-id="${itemId}"]`);
-        let currentValue = parseInt(input.val());
-        const maxValue = parseInt(input.attr('max'));
-        
-        if (action === 'increase' && currentValue < maxValue) {
+        const quantityDisplay = btn.siblings('.quantity-display');
+        let currentValue = parseInt(quantityDisplay.text());
+
+        if (action === 'increase') {
             currentValue++;
         } else if (action === 'decrease' && currentValue > 1) {
             currentValue--;
         }
-        
-        input.val(currentValue);
+
+        quantityDisplay.text(currentValue);
         updateCartItem(itemId, currentValue);
     });
-    
-    // Handle direct quantity input changes
-    $('.quantity-input').on('change', function() {
-        const input = $(this);
-        const itemId = input.data('item-id');
-        const quantity = parseInt(input.val());
-        const maxValue = parseInt(input.attr('max'));
-        
-        if (quantity > maxValue) {
-            input.val(maxValue);
-            updateCartItem(itemId, maxValue);
-        } else if (quantity < 1) {
-            input.val(1);
-            updateCartItem(itemId, 1);
-        } else {
-            updateCartItem(itemId, quantity);
-        }
-    });
-    
-    // Handle item removal
+
+    // Handle item removal (if you want to add remove buttons later)
     $('.remove-item-btn').on('click', function() {
         const itemId = $(this).data('item-id');
         removeCartItem(itemId);
@@ -713,18 +662,23 @@ $(document).ready(function() {
         })
         .done(function(data) {
             if (data.success) {
-                // Update item total
-                $(`.item-total[data-item-id="${itemId}"]`).text(`Rs. ${data.item_total.toFixed(2)}`);
-
                 // Update cart totals
                 updateCartTotals(data.cart_total_price);
-                
-                // Update navbar cart count
-                $('#cart-count').text(data.cart_total_items);
-                
-                showMessage('success', data.message);
+
+                // Update navbar cart count if it exists
+                if ($('#cart-count').length) {
+                    $('#cart-count').text(data.cart_total_items);
+                }
+
+                // Show success message
+                if (typeof showMessage === 'function') {
+                    showMessage('success', data.message);
+                }
             } else {
-                showMessage('danger', data.message);
+                // Show error message
+                if (typeof showMessage === 'function') {
+                    showMessage('danger', data.message);
+                }
             }
         })
         .fail(function() {

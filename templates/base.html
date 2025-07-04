@@ -15,42 +15,184 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     {% block extra_css %}{% endblock %}
 
     <style>
-        /* Mobile Search Bar Styles */
-        .mobile-search-bar {
-            background: linear-gradient(135deg, #0056b3 0%, #007bff 100%);
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        /* Design System Based on Provided Design */
+        :root {
+            --primary-color: #8FA68E;
+            --primary-light: #A8B8A5;
+            --secondary-color: #E8B4A0;
+            --accent-blue: #A8C5D1;
+            --accent-mint: #B8D4C6;
+            --accent-beige: #D4C5A0;
+            --text-primary: #2D3748;
+            --text-secondary: #718096;
+            --text-light: #A0AEC0;
+            --bg-light: #F7FAFC;
+            --bg-white: #FFFFFF;
+            --bg-section: #FAFBFC;
+            --border-color: #E2E8F0;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .mobile-search-bar .form-control {
-            border-radius: 25px 0 0 25px;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px; /* Prevents zoom on iOS */
-            background: white;
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Clean Navbar Design */
+        .navbar {
+            background: var(--bg-white) !important;
             box-shadow: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
         }
 
-        .mobile-search-bar .form-control:focus {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        .navbar-brand {
+            font-weight: 600 !important;
+            font-size: 1.5rem !important;
+            color: var(--text-primary) !important;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
         }
 
-        .mobile-search-bar .btn {
-            border-radius: 0 25px 25px 0;
-            padding: 12px 20px;
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .navbar-brand:hover {
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link {
+            font-weight: 400 !important;
+            color: var(--text-secondary) !important;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            margin: 0 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--bg-section);
+            color: var(--text-primary) !important;
+        }
+
+
+
+        /* Clean Button Design */
+        .btn {
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: var(--transition);
             border: none;
-            background: #28a745;
-            color: white;
-            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
         }
 
-        .mobile-search-bar .btn:hover {
-            background: #218838;
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
         }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-success:hover {
+            background: #D4A574;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Footer Design */
+        .footer {
+            background: var(--bg-section);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-copyright {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer-links {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+
 
         .mobile-search-bar .input-group {
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -123,28 +265,178 @@
         }
 
         /* Mobile-specific improvements */
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 0;
+            }
+
             .navbar-brand {
-                font-size: 1.2rem;
+                font-size: 1.25rem;
             }
 
-            .mobile-search-bar {
-                padding: 10px 0;
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
 
-            .mobile-search-bar .form-control {
-                font-size: 16px;
-                padding: 10px 15px;
+            .navbar-collapse {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid var(--border-color);
             }
 
-            .mobile-search-bar .btn {
-                padding: 10px 15px;
+
+
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
             }
 
             .container {
                 padding-left: 10px;
                 padding-right: 10px;
             }
+        }
+
+        /* Clean Card Design */
+        .card {
+            border: none !important;
+            border-radius: var(--border-radius) !important;
+            box-shadow: var(--shadow-card) !important;
+            transition: var(--transition);
+            overflow: hidden;
+            background: var(--bg-white);
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg) !important;
+            transform: translateY(-4px);
+        }
+
+        .card-img-top {
+            transition: var(--transition);
+            height: 220px;
+            object-fit: cover;
+            background: var(--bg-section);
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.02);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-header {
+            background: var(--bg-section);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+            color: var(--text-primary);
+            padding: 1rem 1.25rem;
+        }
+
+        /* Category Cards */
+        .category-card {
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            position: relative;
+            height: 200px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-card .card-img-overlay {
+            background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-card .card-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Modern Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--text-primary) 0%, #374151 100%);
+            color: white;
+            margin-top: auto;
+            padding: 3rem 0 1rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            border: none;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Form Controls */
+        .form-control {
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
         }
 
         /* Extra small devices */
@@ -163,75 +455,57 @@
             }
         }
 
-        /* Floating Cart Button Styles */
+        /* Clean Floating Cart Button */
         .floating-cart {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            animation: float 3s ease-in-out infinite;
         }
 
         .floating-cart-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            width: 56px;
+            height: 56px;
+            background: var(--primary-color);
             color: white;
             border-radius: 50%;
             text-decoration: none;
-            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.4);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
             position: relative;
-            overflow: hidden;
-        }
-
-        .floating-cart-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .floating-cart-btn:hover::before {
-            left: 100%;
         }
 
         .floating-cart-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(0, 123, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(143, 166, 142, 0.4);
             color: white;
             text-decoration: none;
+            background: var(--primary-light);
         }
 
         .floating-cart-btn i {
-            font-size: 1.5rem;
-            z-index: 2;
+            font-size: 1.25rem;
         }
 
         .floating-cart-count {
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #dc3545;
+            background: var(--secondary-color);
             color: white;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            font-weight: bold;
+            font-size: 0.7rem;
+            font-weight: 600;
             border: 2px solid white;
             z-index: 3;
-            animation: pulse 2s infinite;
         }
 
         .floating-cart-count.hidden {
@@ -319,22 +593,25 @@
             }
 
             .floating-cart {
-                bottom: 80px; /* Move up to avoid bottom navigation */
+                bottom: 20px;
+                right: 15px;
             }
 
             .floating-cart-btn {
-                width: 55px;
-                height: 55px;
+                width: 52px;
+                height: 52px;
             }
 
             .floating-cart-btn i {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
             }
 
             .floating-cart-count {
-                width: 22px;
-                height: 22px;
-                font-size: 0.7rem;
+                width: 18px;
+                height: 18px;
+                font-size: 0.65rem;
+                top: -3px;
+                right: -3px;
             }
         }
 
@@ -371,26 +648,13 @@
     </style>
 </head>
 <body>
-    <!-- Mobile Search Bar (Above navbar on mobile) -->
-    <div class="mobile-search-bar d-lg-none">
-        <div class="container">
-            <form method="GET" action="{% url 'product_list' %}">
-                <div class="input-group">
-                    <input class="form-control" type="search" name="search" placeholder="Search products..."
-                           value="{{ request.GET.search }}" id="mobile-search-input">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
-                <i class="fas fa-shopping-bag me-2"></i>kharidari
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-shopping-bag"></i>Kharidari
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -400,83 +664,53 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                        <a class="nav-link" href="{% url 'home' %}">Featured</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'product_list' %}">Products</a>
+                        <a class="nav-link" href="{% url 'product_list' %}">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">Deals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">New Arrivals</a>
                     </li>
                 </ul>
 
-                <!-- Desktop Search Form -->
-                <div class="search-container me-3 d-none d-lg-block">
-                    <form class="d-flex" method="GET" action="{% url 'product_list' %}">
-                        <input class="form-control me-2" type="search" name="search" placeholder="Search products..."
-                               value="{{ request.GET.search }}" id="desktop-search-input">
-                        <button class="btn btn-outline-light" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
+
                 
                 <!-- User Menu -->
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        {% if user.is_superuser or user.is_staff %}
-                            <!-- Admin User Menu -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/" title="Admin Panel">
-                                    <i class="fas fa-cog me-1"></i>Admin Panel
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-shield me-1"></i>{{ user.username }} (Admin)
-                                </a>
-                                <ul class="dropdown-menu">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>Account
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% if user.is_superuser or user.is_staff %}
                                     <li><a class="dropdown-item" href="/admin/">
                                         <i class="fas fa-cog me-2"></i>Admin Panel
                                     </a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'logout' %}">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </a></li>
-                                </ul>
-                            </li>
-                        {% else %}
-                            <!-- Regular Customer Menu -->
-                            <!-- Desktop Cart (hidden on mobile) -->
-                            <li class="nav-item d-none d-lg-block">
-                                <a class="nav-link position-relative" href="{% url 'cart' %}">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
-                                          id="cart-count-desktop">0</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user me-1"></i>{{ user.username }}
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'order_history' %}">
-                                        <i class="fas fa-history me-2"></i>Order History
-                                    </a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'logout' %}">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </a></li>
-                                </ul>
-                            </li>
-                        {% endif %}
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'cart' %}">
+                                    <i class="fas fa-shopping-cart me-2"></i>My Cart
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'order_history' %}">
+                                    <i class="fas fa-history me-2"></i>My Orders
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a></li>
+                            </ul>
+                        </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">
-                                <i class="fas fa-user-plus me-1"></i>Register
-                            </a>
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -485,25 +719,14 @@
     </nav>
 
     <!-- Floating Cart Button (Mobile Only) -->
-    {% if user.is_authenticated and not user.is_superuser and not user.is_staff %}
+    {% if user.is_authenticated %}
         <div class="floating-cart d-lg-none" id="floating-cart">
             <a href="{% url 'cart' %}" class="floating-cart-btn" id="floating-cart-btn">
                 <i class="fas fa-shopping-cart"></i>
-                <span class="floating-cart-count" id="cart-count-mobile">0</span>
+                {% if cart_item_count > 0 %}
+                    <span class="floating-cart-count">{{ cart_item_count }}</span>
+                {% endif %}
             </a>
-
-            <!-- Quick Cart Preview (shows on long press) -->
-            <div class="cart-preview" id="cart-preview">
-                <div class="cart-preview-header">
-                    <h6><i class="fas fa-shopping-cart me-2"></i>Quick Cart</h6>
-                </div>
-                <div class="cart-preview-content">
-                    <p class="text-muted small">Tap cart to view full details</p>
-                </div>
-                <div class="cart-preview-footer">
-                    <small class="text-muted">Long press for preview</small>
-                </div>
-            </div>
         </div>
     {% endif %}
 
@@ -778,5 +1001,20 @@
     </script>
 
     {% block extra_js %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="{% url 'home' %}">About Us</a>
+                <a href="{% url 'home' %}">Contact</a>
+                <a href="{% url 'home' %}">Privacy Policy</a>
+                <a href="{% url 'home' %}">Terms of Service</a>
+            </div>
+            <div class="footer-copyright">
+                ©2024 Kharidari. All rights reserved.
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
