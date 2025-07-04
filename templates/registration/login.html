@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login - Kharidari{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-sign-in-alt display-4 text-primary mb-3"></i>
+                        <h2 class="h3">Welcome Back</h2>
+                        <p class="text-muted">Sign in to your account</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-2"></i>{{ form.username.label }}
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-lg"
+                                   id="{{ form.username.id_for_label }}"
+                                   name="{{ form.username.name }}"
+                                   value="{{ form.username.value|default:'' }}"
+                                   placeholder="Enter your username"
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.username.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password Field with Show/Hide -->
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>{{ form.password.label }}
+                            </label>
+                            <div class="position-relative">
+                                <input type="password"
+                                       class="form-control form-control-lg pe-5"
+                                       id="{{ form.password.id_for_label }}"
+                                       name="{{ form.password.name }}"
+                                       placeholder="Enter your password"
+                                       required>
+                                <button type="button"
+                                        class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent password-toggle"
+                                        style="z-index: 10;">
+                                    <i class="fas fa-eye text-muted" id="password-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.password.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Account Recovery Links -->
+                    <div class="text-center mt-3">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a href="{% url 'forgot_password' %}" class="btn btn-link btn-sm text-decoration-none">
+                                    <i class="fas fa-key me-1"></i>Forgot Password?
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'forgot_username' %}" class="btn btn-link btn-sm text-decoration-none">
+                                    <i class="fas fa-user-question me-1"></i>Forgot Username?
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <a href="{% url 'account_recovery' %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-user-lock me-1"></i>Account Recovery
+                            </a>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-2">Don't have an account?</p>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <a href="{% url 'home' %}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Home
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Focus on username field
+    $('#id_username').focus();
+
+    // Password show/hide functionality
+    $('.password-toggle').on('click', function() {
+        const passwordField = $(this).siblings('input[type="password"], input[type="text"]');
+        const eyeIcon = $(this).find('i');
+
+        if (passwordField.attr('type') === 'password') {
+            // Show password
+            passwordField.attr('type', 'text');
+            eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+            eyeIcon.removeClass('text-muted').addClass('text-primary');
+        } else {
+            // Hide password
+            passwordField.attr('type', 'password');
+            eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+            eyeIcon.removeClass('text-primary').addClass('text-muted');
+        }
+    });
+
+    // Form submission handling
+    $('form').on('submit', function() {
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Signing In...');
+
+        // Re-enable button after 5 seconds as fallback
+        setTimeout(function() {
+            submitBtn.prop('disabled', false).html('<i class="fas fa-sign-in-alt me-2"></i>Sign In');
+        }, 5000);
+    });
+
+    // Add hover effects to password toggle
+    $('.password-toggle').hover(
+        function() {
+            $(this).find('i').addClass('text-primary');
+        },
+        function() {
+            const eyeIcon = $(this).find('i');
+            if (eyeIcon.hasClass('fa-eye')) {
+                eyeIcon.removeClass('text-primary').addClass('text-muted');
+            }
+        }
+    );
+});
+</script>
+
+<style>
+.password-toggle {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+    transform: scale(1.1);
+}
+
+.password-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.position-relative .password-toggle {
+    right: 10px;
+}
+
+/* Form field icons */
+.form-label i {
+    color: #667eea;
+    width: 16px;
+}
+
+/* Enhanced form styling */
+.form-control {
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+}
+
+/* Login specific animations */
+.form-control {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+</style>
+{% endblock %}

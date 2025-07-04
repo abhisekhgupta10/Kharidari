@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - NepalShop</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .error-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .error-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #fc466b, #3f5efb, #ff6b6b, #4ecdc4);
+        }
+        
+        .error-number {
+            font-size: 8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1;
+            animation: pulse 2s infinite;
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            color: #fc466b;
+            margin-bottom: 30px;
+            animation: shake 3s ease-in-out infinite;
+        }
+        
+        .error-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .btn-home {
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(252, 70, 107, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .error-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            border-left: 4px solid #fc466b;
+        }
+        
+        .error-details h5 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .error-details p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .contact-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .contact-info h5 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .error-card {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .error-number {
+                font-size: 5rem;
+            }
+            
+            .error-title {
+                font-size: 2rem;
+            }
+            
+            .error-message {
+                font-size: 1rem;
+            }
+            
+            .btn-home, .btn-secondary {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-card">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            
+            <div class="error-number">500</div>
+            
+            <h1 class="error-title">Internal Server Error</h1>
+            
+            <p class="error-message">
+                Oops! Something went wrong on our end. Our team has been notified and is working to fix this issue. 
+                Please try again in a few moments.
+            </p>
+            
+            <div class="error-details">
+                <h5><i class="fas fa-info-circle me-2"></i>What happened?</h5>
+                <p>
+                    The server encountered an unexpected condition that prevented it from fulfilling your request. 
+                    This is usually a temporary issue and should be resolved shortly.
+                </p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="javascript:history.back()" class="btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Go Back
+                </a>
+                <a href="{% url 'home' %}" class="btn-home">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h5><i class="fas fa-headset me-2"></i>Need Immediate Help?</h5>
+                <p>
+                    <strong>Email:</strong> 
+                    <a href="mailto:support@nepalshop.com" style="color: #fc466b;">support@nepalshop.com</a>
+                </p>
+                <p>
+                    <strong>Phone:</strong> +977 (01) 123-4567
+                </p>
+                <p>
+                    <strong>Support Hours:</strong> 9:00 AM - 6:00 PM (Nepal Time)
+                </p>
+                <p class="mt-3">
+                    <small class="text-muted">
+                        Error ID: {{ request.META.REQUEST_ID|default:"N/A" }} | 
+                        Time: {{ "now"|date:"Y-m-d H:i:s" }} NPT
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-refresh after 30 seconds
+        setTimeout(function() {
+            if (confirm('Would you like to try refreshing the page?')) {
+                location.reload();
+            }
+        }, 30000);
+        
+        // Add click effect to buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn-home, .btn-secondary');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>

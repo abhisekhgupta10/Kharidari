@@ -1,0 +1,269 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Sales Analytics - Kharidari Admin{% endblock %}
+
+{% block extrahead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .analytics-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .analytics-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .analytics-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px 15px 0 0;
+        margin: -25px -25px 20px -25px;
+    }
+    
+    .metric-card {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .metric-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .table-modern {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table-modern thead {
+        background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+        color: white;
+    }
+    
+    .table-modern tbody tr:hover {
+        background: #f8f9fa;
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+    
+    .revenue-badge {
+        background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+    
+    .quantity-badge {
+        background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);
+        color: #333;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">📈 Sales Analytics Dashboard</h1>
+    
+    <!-- Date Range Info -->
+    <div class="analytics-card">
+        <div class="analytics-header">
+            <h3>📅 Analysis Period</h3>
+        </div>
+        <p><strong>From:</strong> {{ start_date|date:"F d, Y" }} <strong>To:</strong> {{ end_date|date:"F d, Y" }}</p>
+        <p class="text-muted">Showing data for the last 30 days</p>
+    </div>
+    
+    <!-- Category Sales Analysis -->
+    <div class="analytics-card">
+        <div class="analytics-header">
+            <h3>🏷️ Sales by Category</h3>
+        </div>
+        
+        {% if category_sales %}
+        <div class="row mb-4">
+            {% for category in category_sales|slice:":4" %}
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-number">Rs. {{ category.total_revenue|floatformat:0 }}</div>
+                    <div class="metric-label">{{ category.product__category__name }}</div>
+                    <small>{{ category.total_quantity }} items sold</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Total Revenue</th>
+                        <th>Items Sold</th>
+                        <th>Avg. Price</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in category_sales %}
+                    <tr>
+                        <td><strong>{{ category.product__category__name|default:"Uncategorized" }}</strong></td>
+                        <td><span class="revenue-badge">Rs. {{ category.total_revenue|floatformat:0 }}</span></td>
+                        <td><span class="quantity-badge">{{ category.total_quantity }}</span></td>
+                        <td>Rs. {{ category.avg_price|floatformat:0 }}</td>
+                        <td>
+                            {% if category.total_revenue > 50000 %}
+                                <span class="badge bg-success">🔥 Excellent</span>
+                            {% elif category.total_revenue > 20000 %}
+                                <span class="badge bg-info">👍 Good</span>
+                            {% elif category.total_revenue > 5000 %}
+                                <span class="badge bg-warning">⚡ Average</span>
+                            {% else %}
+                                <span class="badge bg-secondary">📈 Needs Boost</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+            <h4>No sales data available</h4>
+            <p class="text-muted">No sales have been recorded in the selected period.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Top Customers -->
+    <div class="analytics-card">
+        <div class="analytics-header">
+            <h3>👑 Top Customers</h3>
+        </div>
+        
+        {% if top_customers %}
+        <div class="row mb-4">
+            {% for customer in top_customers|slice:":3" %}
+            <div class="col-md-4">
+                <div class="metric-card">
+                    <div class="metric-number">Rs. {{ customer.total_spent|floatformat:0 }}</div>
+                    <div class="metric-label">
+                        {{ customer.user__first_name }} {{ customer.user__last_name|default:customer.user__username }}
+                    </div>
+                    <small>{{ customer.order_count }} orders</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Customer</th>
+                        <th>Username</th>
+                        <th>Total Spent</th>
+                        <th>Orders</th>
+                        <th>Avg. Order</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in top_customers %}
+                    <tr>
+                        <td>
+                            {% if forloop.counter == 1 %}
+                                <span class="badge bg-warning">🥇 #{{ forloop.counter }}</span>
+                            {% elif forloop.counter == 2 %}
+                                <span class="badge bg-secondary">🥈 #{{ forloop.counter }}</span>
+                            {% elif forloop.counter == 3 %}
+                                <span class="badge bg-info">🥉 #{{ forloop.counter }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">#{{ forloop.counter }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ customer.user__first_name }} {{ customer.user__last_name }}</strong>
+                        </td>
+                        <td>{{ customer.user__username }}</td>
+                        <td><span class="revenue-badge">Rs. {{ customer.total_spent|floatformat:0 }}</span></td>
+                        <td><span class="quantity-badge">{{ customer.order_count }}</span></td>
+                        <td>Rs. {{ customer.avg_order|floatformat:0 }}</td>
+                        <td>
+                            {% if customer.total_spent > 50000 %}
+                                <span class="badge bg-success">💎 VIP</span>
+                            {% elif customer.total_spent > 20000 %}
+                                <span class="badge bg-info">⭐ Premium</span>
+                            {% elif customer.total_spent > 10000 %}
+                                <span class="badge bg-warning">🌟 Gold</span>
+                            {% else %}
+                                <span class="badge bg-secondary">👤 Regular</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+            <h4>No customer data available</h4>
+            <p class="text-muted">No customers have made purchases in the selected period.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="analytics-card">
+        <div class="analytics-header">
+            <h3>⚡ Quick Actions</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <a href="{% url 'admin:ecommerce_product_add' %}" class="btn btn-primary btn-lg w-100 mb-3">
+                    ➕ Add Product
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'admin:ecommerce_order_changelist' %}" class="btn btn-success btn-lg w-100 mb-3">
+                    📦 Manage Orders
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'admin:ecommerce_category_changelist' %}" class="btn btn-info btn-lg w-100 mb-3">
+                    🏷️ Manage Categories
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="/admin/dashboard/" class="btn btn-warning btn-lg w-100 mb-3">
+                    📊 Main Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

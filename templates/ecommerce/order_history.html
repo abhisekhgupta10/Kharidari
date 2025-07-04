@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order History - ModernShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">
+                <i class="fas fa-history me-2"></i>Order History
+            </h1>
+        </div>
+    </div>
+
+    {% if orders %}
+        <div class="row">
+            <div class="col-12">
+                {% for order in orders %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-0">
+                                    <a href="{{ order.get_absolute_url }}" class="text-decoration-none">
+                                        Order #{{ order.order_number }}
+                                    </a>
+                                </h5>
+                                <small class="text-muted">Placed on {{ order.created_at|date:"F d, Y" }}</small>
+                            </div>
+                            <div class="col-md-3 text-md-center">
+                                <span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'processing' %}info{% elif order.status == 'shipped' %}primary{% elif order.status == 'delivered' %}success{% else %}danger{% endif %} fs-6">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                            <div class="col-md-3 text-md-end">
+                                <strong class="text-primary">Rs. {{ order.total }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Order Items Preview -->
+                            <div class="col-md-8">
+                                <h6 class="mb-3">Items ({{ order.items.count }})</h6>
+                                <div class="row">
+                                    {% for item in order.items.all|slice:":3" %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}"
+                                                     class="img-fluid rounded me-2"
+                                                     alt="{{ item.product.name }}"
+                                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-primary d-flex align-items-center justify-content-center text-white rounded me-2" style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0 small">{{ item.product.name|truncatechars:25 }}</h6>
+                                                <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% if order.items.count > 3 %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <span class="text-muted">+{{ order.items.count|add:"-3" }} more items</span>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Order Actions -->
+                            <div class="col-md-4">
+                                <h6 class="mb-3">Actions</h6>
+                                <div class="d-grid gap-2">
+                                    <a href="{{ order.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                    {% if order.status == 'delivered' %}
+                                    <button class="btn btn-outline-success btn-sm" disabled>
+                                        <i class="fas fa-check me-1"></i>Delivered
+                                    </button>
+                                    {% elif order.status == 'shipped' %}
+                                    <button class="btn btn-outline-info btn-sm" disabled>
+                                        <i class="fas fa-truck me-1"></i>In Transit
+                                    </button>
+                                    {% elif order.status == 'cancelled' %}
+                                    <button class="btn btn-outline-danger btn-sm" disabled>
+                                        <i class="fas fa-times me-1"></i>Cancelled
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <!-- No Orders -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-receipt display-1 text-muted mb-4"></i>
+                    <h3>No orders yet</h3>
+                    <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your order history here.</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

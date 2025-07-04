@@ -1,0 +1,393 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Kharidari Analytics Dashboard{% endblock %}
+
+{% block extrahead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .dashboard-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 20px;
+        color: white;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .dashboard-card.revenue {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    
+    .dashboard-card.orders {
+        background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+    }
+    
+    .dashboard-card.customers {
+        background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+    }
+    
+    .dashboard-card.products {
+        background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);
+        color: #333;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .low-stock {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .medium-stock {
+        color: #ffc107;
+        font-weight: bold;
+    }
+    
+    .high-stock {
+        color: #28a745;
+        font-weight: bold;
+    }
+    
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-processing { background: #d1ecf1; color: #0c5460; }
+    .status-shipped { background: #d4edda; color: #155724; }
+    .status-delivered { background: #d1ecf1; color: #0c5460; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">📊 Kharidari Analytics Dashboard</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="dashboard-card revenue">
+                <div class="stat-number">Rs. {{ total_revenue|floatformat:0 }}</div>
+                <div class="stat-label">💰 Total Revenue</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card orders">
+                <div class="stat-number">{{ total_orders }}</div>
+                <div class="stat-label">📦 Total Orders</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card customers">
+                <div class="stat-number">{{ total_customers }}</div>
+                <div class="stat-label">👥 Total Customers</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card products">
+                <div class="stat-number">{{ total_products }}</div>
+                <div class="stat-label">🛍️ Active Products</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Stats -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="stat-number">Rs. {{ monthly_revenue|floatformat:0 }}</div>
+                <div class="stat-label">📈 Last 30 Days Revenue</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="stat-number">Rs. {{ avg_order_value|floatformat:0 }}</div>
+                <div class="stat-label">💳 Average Order Value</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="chart-container">
+                <h3>📊 Daily Sales Trend (Last 30 Days)</h3>
+                <canvas id="salesChart" height="100"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <h3>📋 Order Status Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- More Charts -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h3>🏷️ Products by Category</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h3>📈 Monthly Revenue Trend</h3>
+                <canvas id="monthlyChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tables Row -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="table-container">
+                <h3>🔥 Top Selling Products</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Sold</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in top_products %}
+                        <tr>
+                            <td>{{ product.name|truncatechars:30 }}</td>
+                            <td>{{ product.category.name }}</td>
+                            <td><span class="badge bg-success">{{ product.total_sold|default:0 }}</span></td>
+                            <td>
+                                <span class="{% if product.stock <= 5 %}low-stock{% elif product.stock <= 20 %}medium-stock{% else %}high-stock{% endif %}">
+                                    {{ product.stock }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center">No sales data available</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="table-container">
+                <h3>🚨 Low Stock Alert</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in low_stock_products %}
+                        <tr>
+                            <td>{{ product.name|truncatechars:30 }}</td>
+                            <td>{{ product.category.name }}</td>
+                            <td><span class="low-stock">{{ product.stock }}</span></td>
+                            <td>
+                                {% if product.stock == 0 %}
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                {% elif product.stock <= 5 %}
+                                    <span class="badge bg-warning">Critical</span>
+                                {% else %}
+                                    <span class="badge bg-info">Low</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-success">All products are well stocked! 🎉</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Orders -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-container">
+                <h3>📋 Recent Orders</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td><strong>{{ order.order_number }}</strong></td>
+                            <td>{{ order.user.get_full_name|default:order.user.username }}</td>
+                            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                            <td><strong>Rs. {{ order.total }}</strong></td>
+                            <td>
+                                <span class="status-badge status-{{ order.status }}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center">No orders yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Chart.js configurations
+Chart.defaults.font.family = 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif';
+Chart.defaults.color = '#666';
+
+// Sales Chart
+const salesData = {{ sales_chart_data|safe }};
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+new Chart(salesCtx, {
+    type: 'line',
+    data: {
+        labels: salesData.labels,
+        datasets: [{
+            label: 'Sales (Rs.)',
+            data: salesData.sales,
+            borderColor: '#11998e',
+            backgroundColor: 'rgba(17, 153, 142, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: true }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+// Order Status Chart
+const statusData = {{ order_status_data|safe }};
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+        labels: statusData.map(item => item.status),
+        datasets: [{
+            data: statusData.map(item => item.count),
+            backgroundColor: [
+                '#ffc107', '#17a2b8', '#28a745', '#007bff', '#dc3545'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' }
+        }
+    }
+});
+
+// Category Chart
+const categoryData = {{ category_chart_data|safe }};
+const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+new Chart(categoryCtx, {
+    type: 'bar',
+    data: {
+        labels: categoryData.labels,
+        datasets: [{
+            label: 'Products',
+            data: categoryData.data,
+            backgroundColor: [
+                '#667eea', '#764ba2', '#11998e', '#38ef7d', '#fc466b', '#3f5efb'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+// Monthly Trend Chart
+const monthlyData = {{ monthly_trend_data|safe }};
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+new Chart(monthlyCtx, {
+    type: 'line',
+    data: {
+        labels: monthlyData.labels,
+        datasets: [{
+            label: 'Revenue (Rs.)',
+            data: monthlyData.revenue,
+            borderColor: '#fc466b',
+            backgroundColor: 'rgba(252, 70, 107, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: true }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

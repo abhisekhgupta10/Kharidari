@@ -1,0 +1,183 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Kharidari Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}" style="color: #fff; text-decoration: none;">
+        🛍️ Kharidari Admin
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}
+<div style="background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+    <nav style="display: flex; gap: 20px; align-items: center;">
+        <a href="{% url 'admin:index' %}" style="color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">
+            🏠 Home
+        </a>
+        <a href="/admin/dashboard/" style="color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">
+            📊 Analytics Dashboard
+        </a>
+        <a href="/admin/analytics/" style="color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">
+            📈 Sales Analytics
+        </a>
+        <a href="{% url 'admin:ecommerce_product_changelist' %}" style="color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">
+            🛍️ Products
+        </a>
+        <a href="{% url 'admin:ecommerce_order_changelist' %}" style="color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">
+            📦 Orders
+        </a>
+        <a href="{% url 'home' %}" target="_blank" style="color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">
+            🌐 View Site
+        </a>
+    </nav>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Custom admin styling */
+    #header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-bottom: none;
+    }
+    
+    .module h2, .module caption, .inline-group h2 {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        border-radius: 5px 5px 0 0;
+    }
+    
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .object-tools a {
+        background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+        border-radius: 5px;
+        padding: 8px 15px;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .object-tools a:hover {
+        background: linear-gradient(135deg, #3f5efb 0%, #fc466b 100%);
+        transform: translateY(-2px);
+    }
+    
+    .results table {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .results table thead th {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        border: none;
+    }
+    
+    .results table tbody tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    
+    .results table tbody tr:hover {
+        background: #e3f2fd;
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+    
+    /* Dashboard specific styles */
+    .dashboard #content {
+        padding: 20px;
+    }
+    
+    .module {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    
+    /* Form styling */
+    .form-row {
+        background: white;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        background: rgba(255,255,255,0.1);
+        border-radius: 5px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .breadcrumbs a {
+        color: #fff;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Messages */
+    .messagelist {
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    
+    .messagelist .success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+    
+    .messagelist .error {
+        background: linear-gradient(135deg, #fc466b 0%, #ff6b6b 100%);
+        color: white;
+    }
+    
+    .messagelist .warning {
+        background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+        color: white;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        #nav-global nav {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        #nav-global a {
+            text-align: center;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block footer %}
+<div id="footer" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 15px; margin-top: 30px;">
+    <p>© 2024 Kharidari Admin Panel | Powered by Django | Made with ❤️ in Nepal</p>
+</div>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Account Recovery - Kharidari{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-lock display-4 text-primary mb-3"></i>
+                        <h2 class="h3">Account Recovery</h2>
+                        <p class="text-muted">Choose how you'd like to recover your account</p>
+                    </div>
+
+                    <!-- Recovery Options -->
+                    <div class="row g-4">
+                        <!-- Forgot Password -->
+                        <div class="col-md-6">
+                            <div class="recovery-option h-100">
+                                <div class="card border-primary h-100">
+                                    <div class="card-body text-center d-flex flex-column">
+                                        <div class="mb-3">
+                                            <i class="fas fa-key fa-3x text-primary"></i>
+                                        </div>
+                                        <h5 class="card-title">Forgot Password</h5>
+                                        <p class="card-text flex-grow-1">
+                                            Reset your password using your email address. 
+                                            We'll send you a secure link to create a new password.
+                                        </p>
+                                        <a href="{% url 'forgot_password' %}" class="btn btn-primary btn-lg w-100">
+                                            <i class="fas fa-envelope me-2"></i>Reset Password
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Forgot Username -->
+                        <div class="col-md-6">
+                            <div class="recovery-option h-100">
+                                <div class="card border-info h-100">
+                                    <div class="card-body text-center d-flex flex-column">
+                                        <div class="mb-3">
+                                            <i class="fas fa-user-question fa-3x text-info"></i>
+                                        </div>
+                                        <h5 class="card-title">Forgot Username</h5>
+                                        <p class="card-text flex-grow-1">
+                                            Recover your username using your email address. 
+                                            We'll help you find your account username.
+                                        </p>
+                                        <a href="{% url 'forgot_username' %}" class="btn btn-info btn-lg w-100">
+                                            <i class="fas fa-search me-2"></i>Find Username
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help Section -->
+                    <div class="mt-5">
+                        <div class="alert alert-light border">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-2"></i>Need More Help?
+                            </h6>
+                            <p class="mb-2">If you're still having trouble accessing your account:</p>
+                            <ul class="mb-3">
+                                <li>Make sure you're using the correct email address</li>
+                                <li>Check your spam/junk folder for recovery emails</li>
+                                <li>Try using a different browser or device</li>
+                                <li>Contact our customer support team</li>
+                            </ul>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="mailto:support@nepalshop.com" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-envelope me-1"></i>Email Support
+                                </a>
+                                <a href="tel:+977-01-123-4567" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-phone me-1"></i>Call Support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Back to Login -->
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <p class="mb-2">Remember your login details?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Back to Login
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <a href="{% url 'home' %}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Home
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Add hover effects to recovery options
+    $('.recovery-option .card').hover(
+        function() {
+            $(this).addClass('shadow-lg').css('transform', 'translateY(-5px)');
+        },
+        function() {
+            $(this).removeClass('shadow-lg').css('transform', 'translateY(0)');
+        }
+    );
+});
+</script>
+
+<style>
+.recovery-option .card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.recovery-option .card:hover {
+    transform: translateY(-5px);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+}
+
+.recovery-option .card {
+    background: white;
+    border: 2px solid #e9ecef !important;
+}
+
+.recovery-option .card.border-primary {
+    border-color: #667eea !important;
+}
+
+.recovery-option .card.border-info {
+    border-color: #17a2b8 !important;
+}
+
+.recovery-option .card:hover.border-primary {
+    border-color: #667eea !important;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2) !important;
+}
+
+.recovery-option .card:hover.border-info {
+    border-color: #17a2b8 !important;
+    box-shadow: 0 10px 30px rgba(23, 162, 184, 0.2) !important;
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.btn {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}

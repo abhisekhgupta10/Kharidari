@@ -1,0 +1,782 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}kharidari - Online Shopping in Nepal{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        /* Mobile Search Bar Styles */
+        .mobile-search-bar {
+            background: linear-gradient(135deg, #0056b3 0%, #007bff 100%);
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .mobile-search-bar .form-control {
+            border-radius: 25px 0 0 25px;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px; /* Prevents zoom on iOS */
+            background: white;
+            box-shadow: none;
+        }
+
+        .mobile-search-bar .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .mobile-search-bar .btn {
+            border-radius: 0 25px 25px 0;
+            padding: 12px 20px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+
+        .mobile-search-bar .btn:hover {
+            background: #218838;
+        }
+
+        .mobile-search-bar .input-group {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-search-bar .input-group.focused {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .mobile-search-bar .form-control.has-content {
+            background: #f8f9fa;
+        }
+
+        /* Add a subtle animation to the mobile search bar */
+        .mobile-search-bar {
+            animation: slideInDown 0.3s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        @media (max-width: 991.98px) {
+            .mobile-search-bar {
+                display: block;
+            }
+
+            .navbar-nav {
+                margin-top: 10px;
+            }
+
+            /* Make navbar stick properly with mobile search bar */
+            .navbar.sticky-top {
+                top: 0;
+            }
+
+            /* Adjust body padding for fixed mobile search */
+            body {
+                padding-top: 0;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .mobile-search-bar {
+                display: none !important;
+            }
+        }
+
+        /* Enhanced search input styles */
+        .search-container input[type="search"] {
+            transition: all 0.3s ease;
+        }
+
+        .search-container input[type="search"]:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            border-color: #80bdff;
+        }
+
+        /* Mobile-specific improvements */
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .mobile-search-bar {
+                padding: 10px 0;
+            }
+
+            .mobile-search-bar .form-control {
+                font-size: 16px;
+                padding: 10px 15px;
+            }
+
+            .mobile-search-bar .btn {
+                padding: 10px 15px;
+            }
+
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .mobile-search-bar .form-control {
+                padding: 8px 12px;
+                font-size: 15px;
+            }
+
+            .mobile-search-bar .btn {
+                padding: 8px 12px;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Floating Cart Button Styles */
+        .floating-cart {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-cart-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-cart-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .floating-cart-btn:hover::before {
+            left: 100%;
+        }
+
+        .floating-cart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 123, 255, 0.6);
+            color: white;
+            text-decoration: none;
+        }
+
+        .floating-cart-btn i {
+            font-size: 1.5rem;
+            z-index: 2;
+        }
+
+        .floating-cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border: 2px solid white;
+            z-index: 3;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-cart-count.hidden {
+            display: none;
+        }
+
+        /* Cart Preview Styles */
+        .cart-preview {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 250px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .cart-preview.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .cart-preview-header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .cart-preview-header h6 {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .cart-preview-content {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .cart-preview-footer {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            text-align: center;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Cart and navbar improvements for mobile */
+        @media (max-width: 768px) {
+            .navbar-nav .nav-link {
+                padding: 8px 16px;
+            }
+
+            .navbar-collapse {
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .floating-cart {
+                bottom: 80px; /* Move up to avoid bottom navigation */
+            }
+
+            .floating-cart-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .floating-cart-btn i {
+                font-size: 1.3rem;
+            }
+
+            .floating-cart-count {
+                width: 22px;
+                height: 22px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .floating-cart {
+                bottom: 70px;
+                right: 15px;
+            }
+
+            .floating-cart-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .floating-cart-btn i {
+                font-size: 1.2rem;
+            }
+
+            .floating-cart-count {
+                width: 20px;
+                height: 20px;
+                font-size: 0.65rem;
+                top: -3px;
+                right: -3px;
+            }
+        }
+
+        /* Hide floating cart on desktop */
+        @media (min-width: 992px) {
+            .floating-cart {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Search Bar (Above navbar on mobile) -->
+    <div class="mobile-search-bar d-lg-none">
+        <div class="container">
+            <form method="GET" action="{% url 'product_list' %}">
+                <div class="input-group">
+                    <input class="form-control" type="search" name="search" placeholder="Search products..."
+                           value="{{ request.GET.search }}" id="mobile-search-input">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <i class="fas fa-shopping-bag me-2"></i>kharidari
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">Products</a>
+                    </li>
+                </ul>
+
+                <!-- Desktop Search Form -->
+                <div class="search-container me-3 d-none d-lg-block">
+                    <form class="d-flex" method="GET" action="{% url 'product_list' %}">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search products..."
+                               value="{{ request.GET.search }}" id="desktop-search-input">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- User Menu -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user.is_superuser or user.is_staff %}
+                            <!-- Admin User Menu -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/" title="Admin Panel">
+                                    <i class="fas fa-cog me-1"></i>Admin Panel
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-shield me-1"></i>{{ user.username }} (Admin)
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/admin/">
+                                        <i class="fas fa-cog me-2"></i>Admin Panel
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <!-- Regular Customer Menu -->
+                            <!-- Desktop Cart (hidden on mobile) -->
+                            <li class="nav-item d-none d-lg-block">
+                                <a class="nav-link position-relative" href="{% url 'cart' %}">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                                          id="cart-count-desktop">0</span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user me-1"></i>{{ user.username }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'order_history' %}">
+                                        <i class="fas fa-history me-2"></i>Order History
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating Cart Button (Mobile Only) -->
+    {% if user.is_authenticated and not user.is_superuser and not user.is_staff %}
+        <div class="floating-cart d-lg-none" id="floating-cart">
+            <a href="{% url 'cart' %}" class="floating-cart-btn" id="floating-cart-btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="floating-cart-count" id="cart-count-mobile">0</span>
+            </a>
+
+            <!-- Quick Cart Preview (shows on long press) -->
+            <div class="cart-preview" id="cart-preview">
+                <div class="cart-preview-header">
+                    <h6><i class="fas fa-shopping-cart me-2"></i>Quick Cart</h6>
+                </div>
+                <div class="cart-preview-content">
+                    <p class="text-muted small">Tap cart to view full details</p>
+                </div>
+                <div class="cart-preview-footer">
+                    <small class="text-muted">Long press for preview</small>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>kharidari</h5>
+                    <p>Your trusted online shopping destination in Nepal with modern design and secure transactions.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Home</a></li>
+                        <li><a href="{% url 'product_list' %}" class="text-light text-decoration-none">Products</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p><i class="fas fa-envelope me-2"></i>info@kharidari.com</p>
+                    <p><i class="fas fa-phone me-2"></i>+977-9809585519</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>Tulsipur Dang, Nepal</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2024 kharidari. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- Mobile Search JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Enhanced mobile search functionality
+            function enhanceMobileSearch() {
+                const mobileSearchInput = $('#mobile-search-input');
+
+                // Auto-focus on mobile search when page loads (optional)
+                if (window.innerWidth <= 991) {
+                    // Don't auto-focus to avoid keyboard popup on page load
+                    // mobileSearchInput.focus();
+                }
+
+                // Add search suggestions placeholder rotation
+                const searchPlaceholders = [
+                    'Search products...',
+                    'Try "electronics"...',
+                    'Find "clothing"...',
+                    'Search "books"...',
+                    'Look for "accessories"...'
+                ];
+
+                let placeholderIndex = 0;
+                setInterval(() => {
+                    if (!mobileSearchInput.is(':focus') && mobileSearchInput.val() === '') {
+                        placeholderIndex = (placeholderIndex + 1) % searchPlaceholders.length;
+                        mobileSearchInput.attr('placeholder', searchPlaceholders[placeholderIndex]);
+                    }
+                }, 3000);
+
+                // Add search input enhancements
+                mobileSearchInput.on('focus', function() {
+                    $(this).parent().addClass('focused');
+                    $(this).attr('placeholder', 'Type to search...');
+                });
+
+                mobileSearchInput.on('blur', function() {
+                    $(this).parent().removeClass('focused');
+                    if ($(this).val() === '') {
+                        $(this).attr('placeholder', 'Search products...');
+                    }
+                });
+
+                // Add input validation
+                mobileSearchInput.on('input', function() {
+                    const query = $(this).val().trim();
+                    const submitBtn = $(this).siblings('.btn');
+
+                    if (query.length > 0) {
+                        submitBtn.removeClass('btn-primary').addClass('btn-success');
+                        $(this).addClass('has-content');
+                    } else {
+                        submitBtn.removeClass('btn-success').addClass('btn-primary');
+                        $(this).removeClass('has-content');
+                    }
+                });
+            }
+
+            // Initialize mobile search enhancements
+            enhanceMobileSearch();
+
+            // Enhanced search functionality
+            function enhanceSearchInput(inputSelector) {
+                $(inputSelector).on('input', function() {
+                    const query = $(this).val().trim();
+                    if (query.length > 0) {
+                        $(this).addClass('has-content');
+                    } else {
+                        $(this).removeClass('has-content');
+                    }
+                });
+
+                // Add search suggestions (basic implementation)
+                $(inputSelector).on('focus', function() {
+                    $(this).attr('placeholder', 'Try "electronics", "clothing", "books"...');
+                });
+
+                $(inputSelector).on('blur', function() {
+                    $(this).attr('placeholder', 'Search products...');
+                });
+            }
+
+            // Apply enhancements to both desktop and mobile search
+            enhanceSearchInput('#desktop-search-input');
+            enhanceSearchInput('#mobile-search-input');
+
+            // Sync search inputs between desktop and mobile
+            $('#desktop-search-input, #mobile-search-input').on('input', function() {
+                const value = $(this).val();
+                $('#desktop-search-input, #mobile-search-input').not(this).val(value);
+
+                // Update both search buttons
+                const hasContent = value.trim().length > 0;
+                $('.mobile-search-bar .btn').toggleClass('btn-success', hasContent).toggleClass('btn-primary', !hasContent);
+            });
+
+            // Add loading state to search buttons
+            $('form[action*="product_list"]').on('submit', function() {
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalContent = submitBtn.html();
+
+                submitBtn.prop('disabled', true)
+                        .html('<i class="fas fa-spinner fa-spin"></i>');
+
+                // Re-enable after 3 seconds as fallback
+                setTimeout(() => {
+                    submitBtn.prop('disabled', false).html(originalContent);
+                }, 3000);
+            });
+
+            // Cart count management
+            function updateCartCount(count) {
+                const cartCountDesktop = $('#cart-count-desktop');
+                const cartCountMobile = $('#cart-count-mobile');
+
+                // Update both desktop and mobile cart counts
+                cartCountDesktop.text(count);
+                cartCountMobile.text(count);
+
+                // Hide/show mobile cart count badge
+                if (count > 0) {
+                    cartCountMobile.removeClass('hidden');
+                } else {
+                    cartCountMobile.addClass('hidden');
+                }
+
+                // Add animation when count changes
+                if (count > 0) {
+                    cartCountMobile.addClass('pulse');
+                    setTimeout(() => {
+                        cartCountMobile.removeClass('pulse');
+                    }, 1000);
+                }
+            }
+
+            // Load initial cart count (you can implement this via AJAX)
+            function loadCartCount() {
+                // This would typically be an AJAX call to get current cart count
+                // For now, we'll use a placeholder
+                const currentCount = 0; // Replace with actual cart count
+                updateCartCount(currentCount);
+            }
+
+            // Initialize cart count
+            loadCartCount();
+
+            // Floating cart button interactions
+            let longPressTimer;
+            let isLongPress = false;
+
+            $('.floating-cart-btn').on('click', function(e) {
+                if (isLongPress) {
+                    e.preventDefault();
+                    isLongPress = false;
+                    return false;
+                }
+
+                // Add click animation
+                $(this).addClass('clicked');
+                setTimeout(() => {
+                    $(this).removeClass('clicked');
+                }, 200);
+            });
+
+            // Long press for cart preview
+            $('.floating-cart-btn').on('touchstart mousedown', function(e) {
+                $(this).css('transform', 'scale(0.95)');
+
+                longPressTimer = setTimeout(() => {
+                    isLongPress = true;
+                    showCartPreview();
+                    // Add haptic feedback on mobile
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                }, 500); // 500ms for long press
+            });
+
+            $('.floating-cart-btn').on('touchend mouseup mouseleave', function() {
+                $(this).css('transform', '');
+                clearTimeout(longPressTimer);
+
+                // Reset long press flag after a short delay
+                setTimeout(() => {
+                    isLongPress = false;
+                }, 100);
+            });
+
+            // Cart preview functions
+            function showCartPreview() {
+                const preview = $('#cart-preview');
+                preview.addClass('show');
+
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    hideCartPreview();
+                }, 3000);
+            }
+
+            function hideCartPreview() {
+                $('#cart-preview').removeClass('show');
+            }
+
+            // Hide cart preview when clicking outside
+            $(document).on('click touchstart', function(e) {
+                const cartPreview = $('#cart-preview');
+                const floatingCart = $('#floating-cart');
+
+                if (cartPreview.hasClass('show') &&
+                    !floatingCart.is(e.target) &&
+                    floatingCart.has(e.target).length === 0) {
+                    hideCartPreview();
+                }
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - {{ site_name }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .email-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #28a745, #20c997, #17a2b8, #007bff);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        
+        .title {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .order-info {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .order-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .order-date {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .customer-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        
+        .customer-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .products-section {
+            margin: 30px 0;
+        }
+        
+        .products-title {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+        
+        .product-placeholder {
+            width: 60px;
+            height: 60px;
+            background: #dee2e6;
+            border-radius: 8px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+        
+        .product-details {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .product-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .order-summary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .next-steps {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        
+        .next-steps h4 {
+            color: #004085;
+            margin-bottom: 15px;
+        }
+        
+        .next-steps ul {
+            color: #004085;
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .next-steps li {
+            margin: 8px 0;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .contact-info h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            margin: 15px 0;
+        }
+        
+        .social-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .email-container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .product-image,
+            .product-placeholder {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .info-row {
+                flex-direction: column;
+            }
+            
+            .summary-row {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">🛍️ {{ site_name }}</div>
+            <div class="success-icon">✅</div>
+            <h1 class="title">Order Confirmed!</h1>
+            <p class="subtitle">Thank you for your purchase</p>
+        </div>
+
+        <div class="order-info">
+            <div class="order-number">Order #{{ order.order_number }}</div>
+            <div class="order-date">Placed on {{ order.created_at|date:"F d, Y \a\\t g:i A" }} (Nepal Time)</div>
+        </div>
+
+        <div class="customer-info">
+            <h3><i class="fas fa-user"></i> Customer Information</h3>
+            <div class="info-row">
+                <span><strong>Name:</strong></span>
+                <span>{{ order.user.first_name|default:order.user.username }} {{ order.user.last_name }}</span>
+            </div>
+            <div class="info-row">
+                <span><strong>Email:</strong></span>
+                <span>{{ order.user.email }}</span>
+            </div>
+            <div class="info-row">
+                <span><strong>Order Status:</strong></span>
+                <span style="color: #28a745; font-weight: bold;">{{ order.get_status_display }}</span>
+            </div>
+            <div class="info-row">
+                <span><strong>Payment Method:</strong></span>
+                <span style="color: #007bff; font-weight: bold;">{{ order.get_payment_method_display }}</span>
+            </div>
+        </div>
+
+        <div class="products-section">
+            <h3 class="products-title"><i class="fas fa-shopping-bag"></i> Your Items</h3>
+            {% for item in order.items.all %}
+            <div class="product-item">
+                {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">
+                {% else %}
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+                {% endif %}
+                <div class="product-details">
+                    <div class="product-name">{{ item.product.name }}</div>
+                    <div class="product-quantity">Quantity: {{ item.quantity }}</div>
+                    <div class="product-price">Rs. {{ item.get_total_price }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="order-summary">
+            <h3 class="summary-title"><i class="fas fa-receipt"></i> Order Summary</h3>
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>Rs. {{ order.total_amount }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (13% VAT):</span>
+                <span>Rs. 0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping:</span>
+                <span>
+                    {% if order.total_amount >= 5000 %}
+                        Free
+                    {% else %}
+                        Rs. 200.00
+                    {% endif %}
+                </span>
+            </div>
+            <div class="summary-row">
+                <span><strong>Total Paid:</strong></span>
+                <span><strong>Rs. {{ order.total_amount|add:200 }}</strong></span>
+            </div>
+        </div>
+
+        <div class="next-steps">
+            <h4><i class="fas fa-truck"></i> What's Next?</h4>
+            <ul>
+                <li><strong>Order Processing:</strong> We'll prepare your items within 1-2 business days</li>
+                <li><strong>Shipping:</strong> Your order will be shipped within 3-5 business days</li>
+                <li><strong>Tracking:</strong> You'll receive tracking information via email</li>
+                <li><strong>Delivery:</strong> Estimated delivery in 5-7 business days</li>
+            </ul>
+        </div>
+
+        <div class="contact-info">
+            <h4><i class="fas fa-headset"></i> Need Help?</h4>
+            <p><strong>Email:</strong> support@kharidari.com</p>
+            <p><strong>Phone:</strong> +977 (01) 123-4567</p>
+            <p><strong>Support Hours:</strong> 9:00 AM - 6:00 PM (Nepal Time)</p>
+            <p><strong>Order Inquiries:</strong> Please include your order number #{{ order.order_number }}</p>
+        </div>
+
+        <div class="footer">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p>This email was sent from {{ site_name }} order system.</p>
+            <p>© 2024 {{ site_name }}. All rights reserved.</p>
+            <p>Kathmandu, Nepal</p>
+        </div>
+    </div>
+</body>
+</html>

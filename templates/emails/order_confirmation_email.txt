@@ -1,0 +1,61 @@
+🛍️ {{ site_name }} - Order Confirmation
+
+✅ ORDER CONFIRMED!
+Thank you for your purchase
+
+==========================================
+ORDER DETAILS
+==========================================
+Order Number: #{{ order.order_number }}
+Order Date: {{ order.created_at|date:"F d, Y \a\\t g:i A" }} (Nepal Time)
+Status: {{ order.get_status_display }}
+
+==========================================
+CUSTOMER INFORMATION
+==========================================
+Name: {{ order.user.first_name|default:order.user.username }} {{ order.user.last_name }}
+Email: {{ order.user.email }}
+Payment Method: {{ order.get_payment_method_display }}
+
+==========================================
+YOUR ITEMS
+==========================================
+{% for item in order.items.all %}
+• {{ item.product.name }}
+  Quantity: {{ item.quantity }}
+  Price: Rs. {{ item.get_total_price }}
+
+{% endfor %}
+==========================================
+ORDER SUMMARY
+==========================================
+Subtotal: Rs. {{ order.total_amount }}
+Tax (13% VAT): Rs. 0.00
+Shipping: {% if order.total_amount >= 5000 %}Free{% else %}Rs. 200.00{% endif %}
+------------------------------------------
+Total Paid: Rs. {{ order.total_amount|add:200 }}
+
+==========================================
+WHAT'S NEXT?
+==========================================
+🔄 Order Processing: We'll prepare your items within 1-2 business days
+📦 Shipping: Your order will be shipped within 3-5 business days  
+📧 Tracking: You'll receive tracking information via email
+🚚 Delivery: Estimated delivery in 5-7 business days
+
+==========================================
+NEED HELP?
+==========================================
+📧 Email: support@kharidari.com
+📞 Phone: +977 (01) 123-4567
+🕒 Support Hours: 9:00 AM - 6:00 PM (Nepal Time)
+
+For order inquiries, please include your order number: #{{ order.order_number }}
+
+==========================================
+Thank you for shopping with {{ site_name }}!
+
+© 2024 {{ site_name }}. All rights reserved.
+Kathmandu, Nepal
+
+This email was sent from {{ site_name }} order system.

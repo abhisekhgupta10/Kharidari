@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - ModernShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'category_products' product.category.slug %}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ product.name|truncatechars:30 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-lg-6 mb-4">
+            <div class="product-image-wrapper position-relative">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded shadow" alt="{{ product.name }}">
+                {% else %}
+                    <div class="img-fluid rounded shadow bg-primary d-flex align-items-center justify-content-center text-white" style="height: 400px;">
+                        <i class="fas fa-image display-1"></i>
+                    </div>
+                {% endif %}
+                {% if product.get_discount_percentage %}
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-3 fs-6">
+                        -{{ product.get_discount_percentage }}%
+                    </span>
+                {% endif %}
+                {% if not product.is_in_stock %}
+                    <span class="badge bg-secondary position-absolute top-0 start-0 m-3 fs-6">
+                        Out of Stock
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div class="product-details">
+                <h1 class="h2 mb-3">{{ product.name }}</h1>
+                
+                <!-- Category -->
+                <div class="mb-3">
+                    <a href="{% url 'category_products' product.category.slug %}" 
+                       class="badge bg-primary text-decoration-none">
+                        <i class="fas fa-tag me-1"></i>{{ product.category.name }}
+                    </a>
+                </div>
+
+                <!-- Price -->
+                <div class="price-section mb-4">
+                    {% if product.discount_price %}
+                        <span class="h2 text-primary">Rs. {{ product.discount_price }}</span>
+                        <span class="h4 text-muted text-decoration-line-through ms-3">Rs. {{ product.price }}</span>
+                        <div class="text-success mt-2">
+                            <i class="fas fa-tag me-1"></i>You save {{ product.get_discount_percentage }}%
+                        </div>
+                    {% else %}
+                        <span class="h2 text-primary">Rs. {{ product.price }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Stock Status -->
+                <div class="stock-status mb-4">
+                    {% if product.is_in_stock %}
+                        <span class="badge bg-success fs-6">
+                            <i class="fas fa-check me-1"></i>In Stock ({{ product.stock }} available)
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger fs-6">
+                            <i class="fas fa-times me-1"></i>Out of Stock
+                        </span>
+                    {% endif %}
+                </div>
+
+                <!-- Add to Cart Form -->
+                {% if product.is_in_stock and user.is_authenticated and not user.is_superuser and not user.is_staff %}
+                    <form class="add-to-cart-form mb-4" data-product-id="{{ product.id }}">
+                        {% csrf_token %}
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label for="quantity" class="form-label">Quantity:</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity"
+                                       value="1" min="1" max="{{ product.stock }}">
+                            </div>
+                            <div class="col-md-8">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                {% elif not user.is_authenticated %}
+                    <div class="mb-4">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Purchase
+                        </a>
+                    </div>
+                {% elif user.is_superuser or user.is_staff %}
+                    <div class="mb-4">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            You are logged in as an admin user. Use the admin panel to manage products.
+                        </div>
+                        <a href="/admin/ecommerce/product/{{ product.id }}/change/" class="btn btn-secondary btn-lg w-100">
+                            <i class="fas fa-edit me-2"></i>Edit Product in Admin
+                        </a>
+                    </div>
+                {% endif %}
+
+                <!-- Product Features -->
+                <div class="product-features mb-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="fas fa-shipping-fast text-primary mb-2 d-block"></i>
+                            <small>Fast Shipping</small>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-shield-alt text-primary mb-2 d-block"></i>
+                            <small>Secure Payment</small>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-undo text-primary mb-2 d-block"></i>
+                            <small>Easy Returns</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Description -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Product Description
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ product.description|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="h4 mb-4">
+                <i class="fas fa-heart me-2"></i>You might also like
+            </h3>
+            <div class="row">
+                {% for related_product in related_products %}
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card product-card h-100 border-0 shadow-sm">
+                        <div class="card-img-wrapper position-relative">
+                            {% if related_product.image %}
+                                <img src="{{ related_product.image.url }}" class="card-img-top" alt="{{ related_product.name }}">
+                            {% else %}
+                                <div class="card-img-placeholder bg-primary d-flex align-items-center justify-content-center text-white">
+                                    <i class="fas fa-image display-4"></i>
+                                </div>
+                            {% endif %}
+                            {% if related_product.get_discount_percentage %}
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                    -{{ related_product.get_discount_percentage }}%
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{{ related_product.name|truncatechars:40 }}</h6>
+                            <div class="price-section mb-3 mt-auto">
+                                {% if related_product.discount_price %}
+                                    <span class="h6 text-primary">Rs. {{ related_product.discount_price }}</span>
+                                    <span class="text-muted text-decoration-line-through ms-2">Rs. {{ related_product.price }}</span>
+                                {% else %}
+                                    <span class="h6 text-primary">Rs. {{ related_product.price }}</span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ related_product.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Product detail specific JavaScript
+$(document).ready(function() {
+    // Handle add to cart form submission
+    $('.add-to-cart-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        const form = $(this);
+        const productId = form.data('product-id');
+        const quantity = form.find('input[name="quantity"]').val();
+        const submitBtn = form.find('button[type="submit"]');
+        
+        // Disable button and show loading
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Adding...');
+        
+        $.post(`/add-to-cart/${productId}/`, {
+            'quantity': quantity,
+            'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+        })
+        .done(function(data) {
+            if (data.success) {
+                // Update cart count in navbar
+                $('#cart-count').text(data.cart_total_items);
+                
+                // Show success message
+                showMessage('success', data.message);
+                
+                // Reset form
+                form.find('input[name="quantity"]').val(1);
+            } else {
+                showMessage('danger', data.message);
+            }
+        })
+        .fail(function() {
+            showMessage('danger', 'An error occurred. Please try again.');
+        })
+        .always(function() {
+            // Re-enable button
+            submitBtn.prop('disabled', false).html('<i class="fas fa-cart-plus me-2"></i>Add to Cart');
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Kharidari{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Welcome to Kharidari</h1>
+                <p class="lead mb-4">Discover amazing products in Nepal with modern design, secure shopping, and fast delivery across the country. Your satisfaction is our priority.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                </a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-shopping-cart display-1 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-shipping-fast text-primary display-4 mb-3"></i>
+                        <h5 class="card-title">Fast Shipping</h5>
+                        <p class="card-text">Free shipping on orders over Rs. 5,000. Get your products delivered quickly and safely across Nepal.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-shield-alt text-primary display-4 mb-3"></i>
+                        <h5 class="card-title">Secure Shopping</h5>
+                        <p class="card-text">Your data is protected with industry-standard security measures and encryption.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-headset text-primary display-4 mb-3"></i>
+                        <h5 class="card-title">24/7 Support</h5>
+                        <p class="card-text">Our customer support team is available around the clock to help you.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+{% if categories %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Shop by Category</h2>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card category-card h-100 border-0 shadow-sm">
+                    <div class="card-img-wrapper">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                        {% else %}
+                            <div class="card-img-placeholder bg-primary d-flex align-items-center justify-content-center">
+                                <i class="fas fa-tag text-white display-4"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ category.name }}</h5>
+                        <p class="card-text">{{ category.description|truncatewords:15 }}</p>
+                        <a href="{% url 'category_products' category.slug %}" class="btn btn-primary">
+                            Browse {{ category.name }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products Section -->
+{% if featured_products %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Featured Products</h2>
+        <div class="row">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div class="card-img-wrapper position-relative">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="card-img-placeholder bg-primary d-flex align-items-center justify-content-center text-white">
+                                <i class="fas fa-image display-4"></i>
+                            </div>
+                        {% endif %}
+                        {% if product.get_discount_percentage %}
+                            <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                -{{ product.get_discount_percentage }}%
+                            </span>
+                        {% endif %}
+                        {% if not product.is_in_stock %}
+                            <span class="badge bg-secondary position-absolute top-0 start-0 m-2">
+                                Out of Stock
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">{{ product.name|truncatechars:50 }}</h6>
+                        <p class="card-text text-muted small flex-grow-1">{{ product.description|truncatewords:10 }}</p>
+                        <div class="price-section mb-3">
+                            {% if product.discount_price %}
+                                <span class="h5 text-primary">Rs. {{ product.discount_price }}</span>
+                                <span class="text-muted text-decoration-line-through ms-2">Rs. {{ product.price }}</span>
+                            {% else %}
+                                <span class="h5 text-primary">Rs. {{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                View Details
+                            </a>
+                            {% if product.is_in_stock and user.is_authenticated and not user.is_superuser and not user.is_staff %}
+                                <button class="btn btn-primary btn-sm add-to-cart-btn"
+                                        data-product-id="{{ product.id }}">
+                                    <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                                </button>
+                            {% elif not user.is_authenticated %}
+                                <a href="{% url 'login' %}" class="btn btn-primary btn-sm">
+                                    Login to Buy
+                                </a>
+                            {% elif user.is_superuser or user.is_staff %}
+                                <a href="/admin/" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-cog me-1"></i>Manage in Admin
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+                View All Products
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

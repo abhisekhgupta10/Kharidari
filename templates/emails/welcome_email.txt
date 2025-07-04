@@ -1,0 +1,74 @@
+🛍️ {{ site_name }} - Welcome!
+
+🎉 WELCOME TO {{ site_name|upper }}!
+Your account has been successfully created
+
+==========================================
+Hello {{ user.first_name|default:user.username }}!
+
+We're thrilled to have you join our community of happy shoppers. 
+Get ready to discover amazing products at great prices!
+
+==========================================
+YOUR ACCOUNT DETAILS
+==========================================
+👤 Username: {{ user.username }}
+📧 Email: {{ user.email }}
+📅 Joined: {{ user.date_joined|date:"F d, Y" }}
+
+==========================================
+WHAT YOU CAN DO NOW
+==========================================
+
+🛒 SHOP PRODUCTS
+Browse thousands of products across multiple categories
+
+💝 SPECIAL OFFERS  
+Get exclusive deals and discounts for members
+
+🚚 FAST DELIVERY
+Free shipping on orders over Rs. 5,000
+
+📱 ORDER TRACKING
+Track your orders in real-time
+
+==========================================
+READY TO START SHOPPING?
+==========================================
+Explore our latest products and find exactly what you're looking for!
+
+👉 Visit: {{ request.build_absolute_uri }}/products/
+
+==========================================
+GETTING STARTED TIPS
+==========================================
+💡 Complete your profile: Add your shipping address for faster checkout
+💡 Browse categories: Find products easily using our organized categories  
+💡 Use search: Quickly find specific items using the search bar
+💡 Add to cart: Save items for later and checkout when ready
+💡 Track orders: Monitor your purchases from order to delivery
+
+==========================================
+NEED HELP?
+==========================================
+Our friendly support team is here to help you!
+
+📧 Email: support@kharidari.com
+📞 Phone: +977 (01) 123-4567  
+🕒 Support Hours: 9:00 AM - 6:00 PM (Nepal Time)
+
+==========================================
+FOLLOW US
+==========================================
+Stay connected for the latest updates and offers:
+📘 Facebook: facebook.com/kharidari
+📷 Instagram: @kharidari
+🐦 Twitter: @kharidari
+
+==========================================
+Thank you for choosing {{ site_name }}!
+
+© 2024 {{ site_name }}. All rights reserved.
+Kathmandu, Nepal
+
+This email was sent because you created an account on {{ site_name }}.

@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register - Kharidari{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-plus display-4 text-primary mb-3"></i>
+                        <h2 class="h3">Create Account</h2>
+                        <p class="text-muted">Join NepalShop today</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- First Name Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-2"></i>{{ form.first_name.label }}
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="{{ form.first_name.id_for_label }}"
+                                   name="{{ form.first_name.name }}"
+                                   value="{{ form.first_name.value|default:'' }}"
+                                   placeholder="Enter your first name"
+                                   required>
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.first_name.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Last Name Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-2"></i>{{ form.last_name.label }}
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="{{ form.last_name.id_for_label }}"
+                                   name="{{ form.last_name.name }}"
+                                   value="{{ form.last_name.value|default:'' }}"
+                                   placeholder="Enter your last name"
+                                   required>
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.last_name.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="fas fa-at me-2"></i>{{ form.username.label }}
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="{{ form.username.id_for_label }}"
+                                   name="{{ form.username.name }}"
+                                   value="{{ form.username.value|default:'' }}"
+                                   placeholder="Choose a username"
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.username.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>{{ form.email.label }}
+                            </label>
+                            <input type="email"
+                                   class="form-control"
+                                   id="{{ form.email.id_for_label }}"
+                                   name="{{ form.email.name }}"
+                                   value="{{ form.email.value|default:'' }}"
+                                   placeholder="Enter your email address"
+                                   required>
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.email.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password Field with Show/Hide -->
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>{{ form.password1.label }}
+                            </label>
+                            <div class="position-relative">
+                                <input type="password"
+                                       class="form-control pe-5"
+                                       id="{{ form.password1.id_for_label }}"
+                                       name="{{ form.password1.name }}"
+                                       placeholder="Create a strong password"
+                                       required>
+                                <button type="button"
+                                        class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent password-toggle"
+                                        data-target="{{ form.password1.id_for_label }}"
+                                        style="z-index: 10;">
+                                    <i class="fas fa-eye text-muted password-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.password1.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    Password must be at least 8 characters long and contain letters and numbers.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password Field with Show/Hide -->
+                        <div class="mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>{{ form.password2.label }}
+                            </label>
+                            <div class="position-relative">
+                                <input type="password"
+                                       class="form-control pe-5"
+                                       id="{{ form.password2.id_for_label }}"
+                                       name="{{ form.password2.name }}"
+                                       placeholder="Confirm your password"
+                                       required>
+                                <button type="button"
+                                        class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent password-toggle"
+                                        data-target="{{ form.password2.id_for_label }}"
+                                        style="z-index: 10;">
+                                    <i class="fas fa-eye text-muted password-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.password2.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-2">Already have an account?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <a href="{% url 'home' %}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Home
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Focus on first name field
+    $('#id_first_name').focus();
+
+    // Password show/hide functionality
+    $('.password-toggle').on('click', function() {
+        const targetId = $(this).data('target');
+        const passwordField = $('#' + targetId);
+        const eyeIcon = $(this).find('.password-eye');
+
+        if (passwordField.attr('type') === 'password') {
+            // Show password
+            passwordField.attr('type', 'text');
+            eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+            eyeIcon.removeClass('text-muted').addClass('text-primary');
+        } else {
+            // Hide password
+            passwordField.attr('type', 'password');
+            eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+            eyeIcon.removeClass('text-primary').addClass('text-muted');
+        }
+    });
+
+    // Password strength indicator
+    $('#id_password1').on('input', function() {
+        const password = $(this).val();
+        const strengthIndicator = $('#password-strength');
+
+        if (password.length === 0) {
+            strengthIndicator.hide();
+            return;
+        }
+
+        let strength = 0;
+        let strengthText = '';
+        let strengthClass = '';
+
+        // Check password criteria
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        switch (strength) {
+            case 0:
+            case 1:
+                strengthText = 'Very Weak';
+                strengthClass = 'text-danger';
+                break;
+            case 2:
+                strengthText = 'Weak';
+                strengthClass = 'text-warning';
+                break;
+            case 3:
+                strengthText = 'Fair';
+                strengthClass = 'text-info';
+                break;
+            case 4:
+                strengthText = 'Good';
+                strengthClass = 'text-success';
+                break;
+            case 5:
+                strengthText = 'Strong';
+                strengthClass = 'text-success fw-bold';
+                break;
+        }
+
+        if (!strengthIndicator.length) {
+            $('#id_password1').after('<div id="password-strength" class="small mt-1"></div>');
+        }
+
+        $('#password-strength').html(`Password Strength: <span class="${strengthClass}">${strengthText}</span>`).show();
+    });
+
+    // Password confirmation validation
+    $('#id_password2').on('input', function() {
+        const password1 = $('#id_password1').val();
+        const password2 = $(this).val();
+        const matchIndicator = $('#password-match');
+
+        if (password2.length === 0) {
+            matchIndicator.hide();
+            return;
+        }
+
+        if (!matchIndicator.length) {
+            $(this).after('<div id="password-match" class="small mt-1"></div>');
+        }
+
+        if (password1 === password2) {
+            $('#password-match').html('<span class="text-success"><i class="fas fa-check me-1"></i>Passwords match</span>').show();
+        } else {
+            $('#password-match').html('<span class="text-danger"><i class="fas fa-times me-1"></i>Passwords do not match</span>').show();
+        }
+    });
+
+    // Form submission handling
+    $('form').on('submit', function() {
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...');
+
+        // Re-enable button after 10 seconds as fallback
+        setTimeout(function() {
+            submitBtn.prop('disabled', false).html('<i class="fas fa-user-plus me-2"></i>Create Account');
+        }, 10000);
+    });
+
+    // Add hover effects to password toggle
+    $('.password-toggle').hover(
+        function() {
+            $(this).find('.password-eye').addClass('text-primary');
+        },
+        function() {
+            const eyeIcon = $(this).find('.password-eye');
+            if (eyeIcon.hasClass('fa-eye')) {
+                eyeIcon.removeClass('text-primary').addClass('text-muted');
+            }
+        }
+    );
+});
+</script>
+
+<style>
+.password-toggle {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+    transform: scale(1.1);
+}
+
+.password-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.position-relative .password-toggle {
+    right: 10px;
+}
+
+/* Password strength indicator styles */
+#password-strength {
+    animation: fadeIn 0.3s ease-in;
+}
+
+#password-match {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form field icons */
+.form-label i {
+    color: #667eea;
+    width: 16px;
+}
+
+/* Enhanced form styling */
+.form-control {
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+}
+</style>
+{% endblock %}

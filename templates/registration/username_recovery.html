@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Recover Username - Kharidari{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-question display-4 text-info mb-3"></i>
+                        <h2 class="h3">Recover Your Username</h2>
+                        <p class="text-muted">Enter your email address and we'll help you find your username</p>
+                    </div>
+
+                    <form method="post" id="username-recovery-form">
+                        {% csrf_token %}
+                        
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>{{ form.email.label }}
+                            </label>
+                            <div class="position-relative">
+                                <input type="email" 
+                                       class="form-control form-control-lg" 
+                                       id="{{ form.email.id_for_label }}" 
+                                       name="{{ form.email.name }}" 
+                                       value="{{ form.email.value|default:'' }}"
+                                       placeholder="Enter your email address"
+                                       required>
+                                <div class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                    <i class="fas fa-envelope text-muted"></i>
+                                </div>
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-2">
+                                    {% for error in form.email.errors %}
+                                        <div><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Enter the email address you used when creating your account.
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-info btn-lg">
+                                <i class="fas fa-search me-2"></i>Find My Username
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Help Section -->
+                    <div class="mt-4">
+                        <div class="alert alert-light border">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-lightbulb me-2"></i>Tips for Finding Your Username
+                            </h6>
+                            <ul class="mb-0 small">
+                                <li>Use the same email address you used during registration</li>
+                                <li>Check if you have any emails from NepalShop in your inbox</li>
+                                <li>Your username might be similar to your email address</li>
+                                <li>Try common variations of your name or nickname</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a href="{% url 'login' %}" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Back to Login
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'forgot_password' %}" class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-key me-1"></i>Reset Password
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <a href="{% url 'account_recovery' %}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Other Recovery Options
+                            </a>
+                        </small>
+                    </div>
+
+                    <!-- Create New Account -->
+                    <div class="text-center mt-4">
+                        <div class="alert alert-secondary border-0">
+                            <small>
+                                <strong>Don't have an account?</strong><br>
+                                <a href="{% url 'register' %}" class="btn btn-outline-success btn-sm mt-2">
+                                    <i class="fas fa-user-plus me-1"></i>Create New Account
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Focus on email field
+    $('#id_email').focus();
+    
+    // Email validation
+    $('#id_email').on('input', function() {
+        const email = $(this).val();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = emailRegex.test(email);
+        
+        if (email.length > 0) {
+            if (isValid) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+                $(this).siblings('.position-absolute').find('i')
+                    .removeClass('fa-envelope text-muted')
+                    .addClass('fa-check-circle text-success');
+            } else {
+                $(this).removeClass('is-valid').addClass('is-invalid');
+                $(this).siblings('.position-absolute').find('i')
+                    .removeClass('fa-check-circle text-success')
+                    .addClass('fa-times-circle text-danger');
+            }
+        } else {
+            $(this).removeClass('is-valid is-invalid');
+            $(this).siblings('.position-absolute').find('i')
+                .removeClass('fa-check-circle text-success fa-times-circle text-danger')
+                .addClass('fa-envelope text-muted');
+        }
+    });
+    
+    // Form submission handling
+    $('#username-recovery-form').on('submit', function() {
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Searching...');
+        
+        // Re-enable button after 10 seconds as fallback
+        setTimeout(function() {
+            submitBtn.prop('disabled', false).html('<i class="fas fa-search me-2"></i>Find My Username');
+        }, 10000);
+    });
+    
+    // Add typing animation to placeholder
+    let placeholderText = "Enter your email address";
+    let currentText = "";
+    let isDeleting = false;
+    let charIndex = 0;
+    
+    function typeEffect() {
+        if (!isDeleting && charIndex < placeholderText.length) {
+            currentText += placeholderText.charAt(charIndex);
+            charIndex++;
+        } else if (isDeleting && charIndex > 0) {
+            currentText = currentText.slice(0, -1);
+            charIndex--;
+        } else {
+            isDeleting = !isDeleting;
+            if (!isDeleting) {
+                setTimeout(typeEffect, 1000);
+                return;
+            }
+        }
+        
+        $('#id_email').attr('placeholder', currentText + (isDeleting ? '' : '|'));
+        setTimeout(typeEffect, isDeleting ? 50 : 100);
+    }
+    
+    // Start typing effect after a delay
+    setTimeout(typeEffect, 2000);
+});
+</script>
+
+<style>
+.form-control:focus {
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.alert-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.alert-secondary {
+    background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
+}
+
+.btn {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.form-label i {
+    color: #17a2b8;
+    width: 16px;
+}
+
+/* Animation for form elements */
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    transform: translateY(-1px);
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.btn:disabled {
+    animation: pulse 1.5s infinite;
+}
+
+/* Placeholder animation */
+.form-control::placeholder {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}
