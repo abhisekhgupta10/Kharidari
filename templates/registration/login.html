@@ -28,17 +28,17 @@
                             </div>
                         {% endif %}
 
-                        <!-- Username Field -->
+                        <!-- Email Field -->
                         <div class="mb-3">
                             <label for="{{ form.username.id_for_label }}" class="form-label">
-                                <i class="fas fa-user me-2"></i>{{ form.username.label }}
+                                <i class="fas fa-envelope me-2"></i>{{ form.username.label }}
                             </label>
-                            <input type="text"
+                            <input type="email"
                                    class="form-control form-control-lg"
                                    id="{{ form.username.id_for_label }}"
                                    name="{{ form.username.name }}"
                                    value="{{ form.username.value|default:'' }}"
-                                   placeholder="Enter your username"
+                                   placeholder="Enter your email address"
                                    required>
                             {% if form.username.errors %}
                                 <div class="text-danger small mt-1">
@@ -130,7 +130,7 @@
 {% block extra_js %}
 <script>
 $(document).ready(function() {
-    // Focus on username field
+    // Focus on email field
     $('#id_username').focus();
 
     // Password show/hide functionality

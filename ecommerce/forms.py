@@ -58,8 +58,17 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     """
-    Custom login form with crispy forms styling
+    Custom login form with email authentication and crispy forms styling
     """
+    username = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Enter your email address',
+            'autocomplete': 'email'
+        })
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -68,6 +77,10 @@ class CustomAuthenticationForm(AuthenticationForm):
             Field('password', css_class='form-group mb-3'),
             Submit('submit', 'Login', css_class='btn btn-primary btn-lg w-100')
         )
+
+        # Update field labels and help text
+        self.fields['username'].label = 'Email'
+        self.fields['username'].help_text = 'Enter your email address'
 
 
 class CheckoutForm(forms.ModelForm):

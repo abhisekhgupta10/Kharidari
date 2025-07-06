@@ -119,7 +119,7 @@ class CustomLoginView(LoginView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Invalid username or password. Please try again.')
+        messages.error(self.request, 'Invalid email or password. Please try again.')
         return super().form_invalid(form)
 
 
