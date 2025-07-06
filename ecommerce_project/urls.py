@@ -17,14 +17,20 @@ Including another URLconf
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from ecommerce.admin_views import admin_dashboard, sales_analytics
+from ecommerce.admin_views import admin_dashboard, sales_analytics, admin_products, admin_add_product, admin_orders, admin_order_detail, admin_customers, admin_logout
 from ecommerce.admin import admin_site
 from ecommerce import views
 
 # Custom admin URLs
 admin_patterns = [
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('orders/', admin_orders, name='admin_orders'),
+    path('orders/<str:order_number>/', admin_order_detail, name='admin_order_detail'),
+    path('customers/', admin_customers, name='admin_customers'),
+    path('products/', admin_products, name='admin_products'),
+    path('products/add/', admin_add_product, name='admin_add_product'),
     path('analytics/', sales_analytics, name='admin_analytics'),
+    path('logout/', admin_logout, name='admin_logout'),
     path('', admin_site.urls),
 ]
 

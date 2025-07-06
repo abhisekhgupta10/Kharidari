@@ -130,7 +130,7 @@ def admin_dashboard(request):
         'monthly_trend_data': json.dumps(monthly_trend_data),
     }
     
-    return render(request, 'admin/dashboard.html', context)
+    return render(request, 'admin/new_dashboard.html', context)
 
 
 @staff_member_required
@@ -192,3 +192,204 @@ def sales_analytics(request):
     }
     
     return render(request, 'admin/sales_analytics.html', context)
+
+
+@staff_member_required
+def admin_products(request):
+    """
+    Admin products management page
+    """
+    # Get search query
+    search_query = request.GET.get('search', '')
+
+    # Get all products with related category data
+    products = Product.objects.select_related('category').filter(is_active=True)
+
+    # Apply search filter if provided
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(category__name__icontains=search_query)
+        )
+
+    # Order by name
+    products = products.order_by('name')
+
+    # Get categories for filtering
+    categories = Category.objects.filter(is_active=True).order_by('name')
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'search_query': search_query,
+        'total_products': products.count(),
+    }
+
+    return render(request, 'admin/products.html', context)
+
+
+@staff_member_required
+def admin_add_product(request):
+    """
+    Admin add product page
+    """
+    from .forms import ProductForm
+    from django.contrib import messages
+    from django.shortcuts import redirect
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save()
+            messages.success(request, f'Product "{product.name}" has been added successfully!')
+            return redirect('admin_products')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ProductForm()
+
+    context = {
+        'form': form,
+        'categories': Category.objects.filter(is_active=True).order_by('name'),
+    }
+
+    return render(request, 'admin/add_product.html', context)
+
+
+@staff_member_required
+def admin_orders(request):
+    """
+    Admin orders management page
+    """
+    # Get search query
+    search_query = request.GET.get('search', '')
+
+    # Get all orders with related user data
+    orders = Order.objects.select_related('user').all()
+
+    # Apply search filter if provided
+    if search_query:
+        orders = orders.filter(
+            Q(order_number__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(user__username__icontains=search_query)
+        )
+
+    # Order by creation date (newest first)
+    orders = orders.order_by('-created_at')
+
+    context = {
+        'orders': orders,
+        'search_query': search_query,
+        'total_orders': orders.count(),
+    }
+
+    return render(request, 'admin/orders.html', context)
+
+
+@staff_member_required
+def admin_order_detail(request, order_number):
+    """
+    Admin order detail page with status update functionality
+    """
+    from django.shortcuts import get_object_or_404, redirect
+    from django.contrib import messages
+
+    # Get the order with related data
+    order = get_object_or_404(
+        Order.objects.select_related('user').prefetch_related('items__product'),
+        order_number=order_number
+    )
+
+    # Handle status update
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status and new_status in dict(Order.STATUS_CHOICES):
+            old_status = order.get_status_display()
+            order.status = new_status
+            order.save()
+            messages.success(
+                request,
+                f'Order #{order.order_number} status updated from "{old_status}" to "{order.get_status_display()}"'
+            )
+            return redirect('admin_order_detail', order_number=order.order_number)
+
+    context = {
+        'order': order,
+        'status_choices': Order.STATUS_CHOICES,
+    }
+
+    return render(request, 'admin/order_detail.html', context)
+
+
+@staff_member_required
+def admin_customers(request):
+    """
+    Admin customers management page
+    """
+    from django.contrib.auth.models import User
+    from django.db.models import Count, Sum, Q
+
+    # Get search query
+    search_query = request.GET.get('search', '')
+
+    # Get all users with order statistics
+    customers = User.objects.annotate(
+        order_count=Count('orders', distinct=True),
+        total_spent=Sum('orders__total')
+    ).filter(is_staff=False)
+
+    # Apply search filter if provided
+    if search_query:
+        customers = customers.filter(
+            Q(username__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+
+    # Order by registration date (newest first)
+    customers = customers.order_by('-date_joined')
+
+    # Process customer data to add location and status
+    customer_data = []
+    for customer in customers:
+        # Get the most recent order to determine location
+        recent_order = Order.objects.filter(user=customer).order_by('-created_at').first()
+        location = f"{recent_order.city}, {recent_order.state}" if recent_order and recent_order.city else "Not provided"
+
+        # Determine status based on recent activity
+        status = "Active" if customer.is_active else "Inactive"
+
+        customer_data.append({
+            'user': customer,
+            'location': location,
+            'order_count': customer.order_count or 0,
+            'total_spent': customer.total_spent or 0,
+            'status': status,
+        })
+
+    context = {
+        'customers': customer_data,
+        'search_query': search_query,
+        'total_customers': len(customer_data),
+    }
+
+    return render(request, 'admin/customers.html', context)
+
+
+@staff_member_required
+def admin_logout(request):
+    """
+    Admin logout view
+    """
+    from django.contrib.auth import logout
+    from django.shortcuts import redirect
+    from django.contrib import messages
+
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('login')

@@ -118,6 +118,10 @@ class CustomLoginView(LoginView):
         messages.success(self.request, 'You have been logged in successfully!')
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid username or password. Please try again.')
+        return super().form_invalid(form)
+
 
 def custom_logout_view(request):
     """
@@ -183,6 +187,22 @@ class RegisterView(CreateView):
             messages.success(self.request, 'Account created successfully! Welcome to Kharidari!')
 
         return response
+
+    def form_invalid(self, form):
+        # Add specific error messages for common issues
+        if 'email' in form.errors:
+            for error in form.errors['email']:
+                messages.error(self.request, f"Email Error: {error}")
+
+        if 'username' in form.errors:
+            for error in form.errors['username']:
+                messages.error(self.request, f"Username Error: {error}")
+
+        if 'password2' in form.errors:
+            for error in form.errors['password2']:
+                messages.error(self.request, f"Password Error: {error}")
+
+        return super().form_invalid(form)
 
 
 @login_required
